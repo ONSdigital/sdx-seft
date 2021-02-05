@@ -1,3 +1,4 @@
+import json
 import logging
 
 import requests
@@ -10,8 +11,8 @@ from structlog import wrap_logger
 from app import DELIVER_SERVICE_URL
 from app.errors import QuarantinableError, RetryableError
 
-METADATA_FILE = 'submission'
-SEFT_FILE = 'transformed'
+METADATA_FILE = 'metadata'
+SEFT_FILE = 'seft'
 UTF8 = "utf-8"
 
 logger = wrap_logger(logging.getLogger(__name__))
@@ -22,8 +23,10 @@ session.mount('http://', HTTPAdapter(max_retries=retries))
 
 
 def deliver_seft(meta_dict: dict, file_bytes: bytes):
+    meta_bytes = json.dumps(meta_dict).encode()
+
     files = {
-        METADATA_FILE: meta_dict,
+        METADATA_FILE: meta_bytes,
         SEFT_FILE: file_bytes}
 
     filename = meta_dict['filename']

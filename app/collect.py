@@ -10,10 +10,11 @@ from app.reader import read
 logger = wrap_logger(logging.getLogger(__name__))
 
 
-def process(encrypted_message_str: str):
+def process(message_str: str):
 
     logger.info("processing message")
-    meta_dict = json.loads(encrypted_message_str)
+    print(message_str)
+    meta_dict = json.loads(message_str)
     tx_id = meta_dict.get("tx_id")
     filename = meta_dict.get("filename")
 
@@ -24,6 +25,6 @@ def process(encrypted_message_str: str):
     except Exception as e:
         logger.info("quarantining message")
         logger.error(str(e))
-        quarantine_submission(encrypted_message_str, tx_id)
+        quarantine_submission(message_str, tx_id)
 
 
