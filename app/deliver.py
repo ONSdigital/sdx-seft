@@ -1,5 +1,4 @@
 import json
-# import logging
 import structlog
 
 import requests
@@ -7,7 +6,6 @@ from requests.packages.urllib3.util.retry import Retry
 from requests.adapters import HTTPAdapter
 from requests.packages.urllib3.exceptions import MaxRetryError
 from requests.exceptions import ConnectionError
-# from structlog import wrap_logger
 
 from app import DELIVER_SERVICE_URL
 from app.errors import QuarantinableError, RetryableError

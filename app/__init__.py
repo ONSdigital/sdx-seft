@@ -1,16 +1,7 @@
 import os
-# import logging
 from app.logger import logging_config
 from google.cloud import pubsub_v1
 
-# LOGGING_LEVEL = logging.getLevelName(os.getenv('LOGGING_LEVEL', 'INFO'))
-# LOGGING_FORMAT = "%(asctime)s.%(msecs)06dZ|%(levelname)s: sdx-seft: %(message)s"
-#
-# logging.basicConfig(
-#     format=LOGGING_FORMAT,
-#     datefmt="%Y-%m-%dT%H:%M:%S",
-#     level=LOGGING_LEVEL,
-# )
 
 logging_config()
 

@@ -1,9 +1,7 @@
-# import logging
 import structlog
 import threading
 from concurrent.futures import TimeoutError
 
-# from structlog import wrap_logger
 from structlog.contextvars import bind_contextvars, clear_contextvars
 from app import seft_subscriber, subscription_path
 from app.collect import process
