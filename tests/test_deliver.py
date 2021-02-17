@@ -1,0 +1,43 @@
+import unittest
+import requests
+from unittest.mock import patch
+
+from app.deliver import deliver_seft
+from app.errors import QuarantinableError, RetryableError
+
+
+class TestDeliver(unittest.TestCase):
+
+    r = requests.Response()
+    seft_message = {
+        'tx_id': '0f534ffc-9442-414c-b39f-a756b4adc6cb',
+        'filename': 'seft_survey'
+    }
+
+    def deliver_bad_response(self, data, byte, exception):
+        with self.assertRaises(exception) as submission_exception:
+            deliver_seft(data, byte)
+        return str(submission_exception.exception)
+
+    def test_deliver_seft(self):
+
+        with patch('app.deliver.post') as mock_post:
+            mock_post.return_value = self.r
+            self.r.status_code = 200
+            self.assertTrue(deliver_seft(self.seft_message, b'this is some bytes'))
+
+    def test_quarantine_error(self):
+        quarantine_response = "Bad Request response from sdx-deliver"
+        with patch('app.deliver.post') as mock_post:
+            mock_post.return_value = self.r
+            self.r.status_code = 400
+            quarantine_exception_str = self.deliver_bad_response(self.seft_message, b'this is some bytes', QuarantinableError)
+            self.assertEqual(quarantine_exception_str, quarantine_response)
+
+    def test_retry_error(self):
+        retry_response = "Bad response from sdx-deliver"
+        with patch('app.deliver.post') as mock_post:
+            mock_post.return_value = self.r
+            self.r.status_code = 300
+            retry_exception_str = self.deliver_bad_response(self.seft_message, b'this is some bytes', RetryableError)
+            self.assertEqual(retry_exception_str, retry_response)
