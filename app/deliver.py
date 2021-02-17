@@ -1,12 +1,13 @@
 import json
-import logging
+# import logging
+import structlog
 
 import requests
 from requests.packages.urllib3.util.retry import Retry
 from requests.adapters import HTTPAdapter
 from requests.packages.urllib3.exceptions import MaxRetryError
 from requests.exceptions import ConnectionError
-from structlog import wrap_logger
+# from structlog import wrap_logger
 
 from app import DELIVER_SERVICE_URL
 from app.errors import QuarantinableError, RetryableError
@@ -15,7 +16,7 @@ METADATA_FILE = 'metadata'
 SEFT_FILE = 'seft'
 UTF8 = "utf-8"
 
-logger = wrap_logger(logging.getLogger(__name__))
+logger = structlog.get_logger()
 
 session = requests.Session()
 retries = Retry(total=5, backoff_factor=0.1)

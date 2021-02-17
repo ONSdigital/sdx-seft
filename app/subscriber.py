@@ -1,17 +1,23 @@
-import logging
+# import logging
+import structlog
+import threading
 from concurrent.futures import TimeoutError
 
-from structlog import wrap_logger
-
+# from structlog import wrap_logger
+from structlog.contextvars import bind_contextvars, clear_contextvars
 from app import seft_subscriber, subscription_path
 from app.collect import process
 from app.errors import RetryableError
 
-logger = wrap_logger(logging.getLogger(__name__))
+logger = structlog.get_logger()
 
 
 def callback(message):
     try:
+        tx_id = message.attributes.get('tx_id')
+        bind_contextvars(app="SDX-Worker")
+        bind_contextvars(tx_id=tx_id)
+        bind_contextvars(thread=threading.currentThread().getName()[-1:])
         encrypted_message_str = message.data.decode('utf-8')
         process(encrypted_message_str)
         message.ack()
@@ -21,6 +27,8 @@ def callback(message):
     except Exception as e:
         logger.error(f"error {str(e)}, nacking message")
         message.nack()
+    finally:
+        clear_contextvars()
 
 
 def start():

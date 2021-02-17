@@ -1,13 +1,13 @@
 import json
-import logging
-
-from structlog import wrap_logger
+# import logging
+import structlog
 
 from app.deliver import deliver_seft
 from app.quarantine import quarantine_submission
 from app.reader import read
 
-logger = wrap_logger(logging.getLogger(__name__))
+# logger = wrap_logger(logging.getLogger(__name__))
+logger = structlog.get_logger()
 
 
 def process(message_str: str):
@@ -24,7 +24,7 @@ def process(message_str: str):
 
     except Exception as e:
         logger.info("quarantining message")
-        logger.error(str(e))
+        logger.exception(e)
         quarantine_submission(message_str, tx_id)
 
 
