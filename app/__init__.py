@@ -1,12 +1,16 @@
 import os
 from app.logger import logging_config
-from google.cloud import pubsub_v1
-
+from google.cloud import pubsub_v1, storage
 
 logging_config()
 
 PROJECT_ID = os.getenv('PROJECT_ID', 'ons-sdx-sandbox')
 BUCKET_NAME = f'{PROJECT_ID}-sefts'
+
+# create storage client
+storage_client = storage.Client(PROJECT_ID)
+# get bucket with name
+BUCKET = storage_client.bucket(BUCKET_NAME)
 
 # Subscriber config
 subscription_id = "seft-subscription"
