@@ -14,6 +14,7 @@ jobs:
         python-version: '3.8'
     - name: make build
       run: |
+        export PYTHONPATH="${PYTHONPATH}:/home/runner/work/sdx-seft/sdx-seft"
         make build
         pip install codecov
     - name: run tests
