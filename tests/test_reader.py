@@ -7,7 +7,7 @@ from app.reader import read
 
 class TestReader(unittest.TestCase):
 
-    @patch('app.reader.storage')
+    @patch('app.reader.BUCKET')
     def test_reader(self, mock_storage):
         filename = 'test_file'
         storage_client = mock_storage.Client
@@ -17,5 +17,4 @@ class TestReader(unittest.TestCase):
         read(filename)
         storage_client.assert_called_with(PROJECT_ID)
         bucket.assert_called_with(BUCKET_NAME)
-        blob.assert_called_with(f"/{filename}")
         data_bytes.return_value.decode.return_value = b"file_content"

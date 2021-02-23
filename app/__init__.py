@@ -5,7 +5,7 @@ from google.cloud import pubsub_v1, storage
 logging_config()
 
 PROJECT_ID = os.getenv('PROJECT_ID', 'ons-sdx-sandbox')
-BUCKET_NAME = f'{PROJECT_ID}-sefts'
+BUCKET_NAME = f'{PROJECT_ID}-secdfts'
 
 # create storage client
 storage_client = storage.Client(PROJECT_ID)
