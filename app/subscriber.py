@@ -3,7 +3,7 @@ import threading
 from concurrent.futures import TimeoutError
 
 from structlog.contextvars import bind_contextvars, clear_contextvars
-from app import seft_subscriber, subscription_path
+from app import CONFIG
 from app.collect import process
 from app.errors import RetryableError
 
@@ -31,11 +31,11 @@ def callback(message):
 
 def start():
 
-    streaming_pull_future = seft_subscriber.subscribe(subscription_path, callback=callback)
-    print(f"Listening for messages on {subscription_path}..\n")
+    streaming_pull_future = CONFIG.SEFT_SUBSCRIBER.subscribe(CONFIG.SEFT_SUBSCRIPTION_PATH, callback=callback)
+    print(f"Listening for messages on {CONFIG.SEFT_SUBSCRIPTION_PATH}..\n")
 
     # Wrap subscriber in a 'with' block to automatically call close() when done.
-    with seft_subscriber:
+    with CONFIG.SEFT_SUBSCRIBER:
         try:
             # Result() will block indefinitely, unless an exception is encountered first.
             streaming_pull_future.result()
