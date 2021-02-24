@@ -6,4 +6,4 @@ start:
 
 test:
 	pip install -r test_requirements.txt ; \
-	pytest --cov=sdx-worker tests/
+	pytest --cov=app tests/

@@ -1,2 +1,5 @@
 .idea/
 app/__pycache__/
+.coverage
+tests/__pycache__/
+.coverage
