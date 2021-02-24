@@ -14,9 +14,6 @@ jobs:
         python-version: '3.8'
     - name: make build
       run: |
-        echo "$PYTHONPATH"
-        unset PYTHONPATH
-        export PYTHONPATH=.
         make build
         pip install codecov
     - name: run tests
