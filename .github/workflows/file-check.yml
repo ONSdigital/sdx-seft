@@ -18,8 +18,8 @@ jobs:
     name: Unit Tests
     runs-on: ubuntu-latest
     steps:
-    - name: "Checks for changes in Chart.yaml"
-      uses: brettcannon/check-for-changed-files@v1
+    - name: Check for Changed Files
+      uses: brettcannon/check-for-changed-files@v1.0.0
       with:
         file-pattern: "**/README.md"
         skip-label: "There were changes"
