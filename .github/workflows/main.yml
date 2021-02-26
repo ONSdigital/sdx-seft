@@ -38,3 +38,16 @@ jobs:
     - name: Print outputs
       run: echo ${{ steps.chart.outputs.appVersion }}
 
+    - name: Getting main version
+      uses: actions/checkout@v2
+      with:
+        ref: main
+        fetch-depth: 1
+    - name: Read Helm Chart
+      id: chart-main
+      uses: jacobtomlinson/gha-read-helm-chart@master
+      with:
+        path: ./_helm/sdx-seft
+    - name: Print outputs
+      run: echo ${{ steps.chart-main.outputs.appVersion }}
+
