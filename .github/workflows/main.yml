@@ -50,3 +50,14 @@ jobs:
         path: ./_helm/sdx-seft
     - name: Print outputs
       run: echo ${{ steps.chart-main.outputs.appVersion }}
+    - name: Compare appVersion
+      run: |
+        main=${{ steps.chart-main.outputs.appVersion }}
+        branch=${{ steps.chart.outputs.appVersion }}
+        if ["$main" == $"branch"]
+        then
+          echo Version not updated
+          exit 1
+        else:
+          echo Version updated!
+
