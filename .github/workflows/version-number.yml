@@ -17,7 +17,7 @@ jobs:
       with:
         path: ./_helm/sdx-seft
     - name: Print outputs
-      run: echo ${{ steps.chart.outputs.appVersion }}
+      run: echo ${{ steps.chart.outputs.version }}
 
     - name: Getting main version
       uses: actions/checkout@v2
@@ -30,10 +30,10 @@ jobs:
       with:
         path: ./_helm/sdx-seft
     - name: Print outputs
-      run: echo ${{ steps.chart-main.outputs.appVersion }}
+      run: echo ${{ steps.chart-main.outputs.version }}
     - name: Compare appVersion
       run: |
-        if [ ${{ steps.chart-main.outputs.appVersion }} != ${{ steps.chart.outputs.appVersion }} ]
+        if [ ${{ steps.chart-main.outputs.version }} != ${{ steps.chart.outputs.version }} ]
         then
           echo Version updated!
         else
