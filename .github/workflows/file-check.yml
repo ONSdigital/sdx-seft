@@ -1,17 +1,17 @@
-name: Checking version number
-on:
-  pull_request:
-    branches:
-      - '*'
-
+name: My Workflow
+on: [push, pull_request]
 jobs:
   build:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@master
+    - name: Read Helm Chart
+      id: chart
+      uses: jacobtomlinson/gha-read-helm-chart@master
       with:
-        - fetch-depth: '0'
-    - name: print git diff
-      run: |
-        git fetch origin main
-        git diff main
+        path: path/to/chart
+    - name: Print outputs
+        run: |
+        echo "Name - ${{ steps.chart.outputs.name }}"
+        echo "Version - ${{ steps.chart.outputs.version }}"
+        echo "App Version - ${{ steps.chart.outputs.appVersion }}"
