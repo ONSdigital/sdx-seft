@@ -29,9 +29,3 @@ jobs:
       uses: coroo/pytest-coverage-commentator@v1.0.2
       with:
         pytest-coverage: pytest-coverage.txt
-    - name: "Checks for changes in Chart.yaml"
-      uses: brettcannon/check-for-changed-files@v1
-      with:
-        file-pattern: "**/README.md"
-        skip-label: "There were changes"
-        

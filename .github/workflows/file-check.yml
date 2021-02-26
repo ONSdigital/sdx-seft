@@ -1,0 +1,25 @@
+name: File checker
+
+on:
+  pull_request:
+    branches:
+      - '*'
+    types:
+      # On by default if you specify no types.
+      - "opened"
+      - "reopened"
+      - "synchronize"
+      # For `skip-label` only.
+      - "labeled"
+      - "unlabeled"
+
+jobs:
+  build:
+    name: Unit Tests
+    runs-on: ubuntu-latest
+    steps:
+    - name: "Checks for changes in Chart.yaml"
+      uses: brettcannon/check-for-changed-files@v1
+      with:
+        file-pattern: "**/README.md"
+        skip-label: "There were changes"
