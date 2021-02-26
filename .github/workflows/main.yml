@@ -35,4 +35,4 @@ jobs:
       with:
         path: _helm/sdx-seft/Chart.yaml
     - name: Print outputs
-        run: echo "App Version - ${{ steps.chart.outputs.appVersion }}"
+        run: echo ${{ steps.chart.outputs.appVersion }}
