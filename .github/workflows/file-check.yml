@@ -1,11 +1,11 @@
-name: File checker
-
-on:
-  pull_request:
-
-jobs:
-    steps:
-      - name: "Check for Changed Files"
-        uses: brettcannon/check-for-changed-files@v1.0.0
-        with:
-          file-pattern: "**/README.md"
+#name: File checker
+#
+#on:
+#  pull_request:
+#
+#jobs:
+#    steps:
+#      - name: "Check for Changed Files"
+#        uses: brettcannon/check-for-changed-files@v1.0.0
+#        with:
+#          file-pattern: "**/README.md"
