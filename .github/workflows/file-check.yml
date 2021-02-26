@@ -1,34 +1,21 @@
-name: My Workflow
+name: Checking version number
 on:
   pull_request:
     branches:
-      - '*'
       - 'main'
 
 jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout
-        # Checkout is required before did-files-change
-        uses: actions/checkout@v2
-        with:
-          fetch-depth: 0
-          # be sure to override the default value (1) for fetch-depth
-
-      - name: Check changes
-        id: check-changes
-        uses: rdietrick/did-files-change@v1.2
-        with:
-          pathspec: README.md
-
-      - name: Debug
+    - uses: actions/checkout@master
+    - name: Read Helm Chart
+      id: chart
+      uses: jacobtomlinson/gha-read-helm-chart@master
+      with:
+        path: path/to/chart
+    - name: Print outputs
         run: |
-          number=${{ steps.check-changes.outputs.changed }}
-          if [ $number -gt 0 ]
-          then
-            echo "Changes detected in README.md : ${{ steps.check-changes.outputs.changed }}"
-          else
-            echo "No changes detected in Chart.Yaml: Please ensure you have . Exiting"
-            exit 1
-          fi
+        echo "Name - ${{ steps.chart.outputs.name }}"
+        echo "Version - ${{ steps.chart.outputs.version }}"
+        echo "App Version - ${{ steps.chart.outputs.appVersion }}"
