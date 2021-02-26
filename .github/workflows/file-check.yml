@@ -2,16 +2,6 @@ name: File checker
 
 on:
   pull_request:
-    branches:
-      - '*'
-    types:
-      # On by default if you specify no types.
-      - "opened"
-      - "reopened"
-      - "synchronize"
-      # For `skip-label` only.
-      - "labeled"
-      - "unlabeled"
 
 jobs:
   build:
@@ -21,5 +11,5 @@ jobs:
     - name: Check for Changed Files
       uses: brettcannon/check-for-changed-files@v1.0.0
       with:
-        file-pattern: "**/README.md"
-        skip-label: "There were changes"
+        file-pattern: |
+          README.md
