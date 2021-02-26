@@ -33,6 +33,6 @@ jobs:
       id: chart
       uses: jacobtomlinson/gha-read-helm-chart@master
       with:
-        path: _helm/sdx-seft/Chart.yaml
+        path: ./_helm/sdx-seft
     - name: Print outputs
       run: echo ${{ steps.chart.outputs.appVersion }}
