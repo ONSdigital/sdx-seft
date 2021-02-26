@@ -9,7 +9,7 @@ jobs:
       id: chart
       uses: jacobtomlinson/gha-read-helm-chart@master
       with:
-        path: path/to/chart
+        path: ./_helm/sdx-seft/Chart.yaml
     - name: Print outputs
         run: |
         echo "Name - ${{ steps.chart.outputs.name }}"
