@@ -1,5 +1,9 @@
 name: My Workflow
-on: push
+on:
+  pull_request:
+    branches:
+      - '*'
+      - 'main'
 
 jobs:
   build:
@@ -25,6 +29,6 @@ jobs:
           then
             echo "Changes detected in README.md : ${{ steps.check-changes.outputs.changed }}"
           else
-            echo "No changes detected in README.md. Exiting"
+            echo "No changes detected in Chart.Yaml: Please ensure you have . Exiting"
             exit 1
           fi
