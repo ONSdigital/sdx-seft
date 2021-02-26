@@ -1,0 +1,32 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: sdx-seft
+  labels:
+    app: sdx-seft
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: sdx-seft
+  template:
+    metadata:
+      labels:
+        app: sdx-seft
+    spec:
+      containers:
+      - image: eu.gcr.io/{{ .Values.project_id }}/sdx-seft:{{ .Chart.appVersion }}
+        imagePullPolicy: Always
+        name: sdx-seft
+        env:
+          - name: PROJECT_ID
+            valueFrom:
+              configMapKeyRef:
+                name: config
+                key: project_id
+          - name: LOGGING_LEVEL
+            valueFrom:
+              configMapKeyRef:
+                name: config
+                key: logging_level
+      serviceAccountName: sdx-workload-identity
