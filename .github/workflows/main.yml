@@ -29,33 +29,3 @@ jobs:
       uses: coroo/pytest-coverage-commentator@v1.0.2
       with:
         pytest-coverage: pytest-coverage.txt
-
-    - name: Read Helm Chart
-      id: chart
-      uses: jacobtomlinson/gha-read-helm-chart@master
-      with:
-        path: ./_helm/sdx-seft
-    - name: Print outputs
-      run: echo ${{ steps.chart.outputs.appVersion }}
-
-    - name: Getting main version
-      uses: actions/checkout@v2
-      with:
-        ref: main
-        fetch-depth: 1
-    - name: Read Helm Chart
-      id: chart-main
-      uses: jacobtomlinson/gha-read-helm-chart@master
-      with:
-        path: ./_helm/sdx-seft
-    - name: Print outputs
-      run: echo ${{ steps.chart-main.outputs.appVersion }}
-    - name: Compare appVersion
-      run: |
-        if [ ${{ steps.chart-main.outputs.appVersion }} != ${{ steps.chart.outputs.appVersion }} ]
-        then
-          echo Version updated!
-        else
-          echo Version not updated!
-          exit 1
-        fi
