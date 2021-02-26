@@ -54,7 +54,7 @@ jobs:
       run: |
         main=${{ steps.chart-main.outputs.appVersion }}
         branch=${{ steps.chart.outputs.appVersion }}
-        if ["$main" == $"branch"]
+        if [$main == $branch]
         then
           echo Version not updated
           exit 1
