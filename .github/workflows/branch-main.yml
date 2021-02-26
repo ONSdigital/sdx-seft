@@ -1,23 +1,23 @@
-name: Build
-
-on:
-  pull_request:
-    branches:
-      - '*'
-
-jobs:
-  build:
-    name: Branch Version Number
-    runs-on: ubuntu-latest
-    steps:
-    - uses: actions/checkout@v2
-      with:
-        ref: main
-        fetch-depth: 1
-    - name: Read Helm Chart
-      id: chart-main
-      uses: jacobtomlinson/gha-read-helm-chart@master
-      with:
-        path: ./_helm/sdx-seft
-    - name: Print outputs
-      run: echo ${{ steps.chart-main.outputs.appVersion }}
+#name: Build
+#
+#on:
+#  pull_request:
+#    branches:
+#      - '*'
+#
+#jobs:
+#  build:
+#    name:  Main Branch Version Number
+#    runs-on: ubuntu-latest
+#    steps:
+#    - uses: actions/checkout@v2
+#      with:
+#        ref: main
+#        fetch-depth: 1
+#    - name: Read Helm Chart
+#      id: chart-main
+#      uses: jacobtomlinson/gha-read-helm-chart@master
+#      with:
+#        path: ./_helm/sdx-seft
+#    - name: Print outputs
+#      run: echo ${{ steps.chart-main.outputs.appVersion }}
