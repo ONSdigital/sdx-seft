@@ -15,7 +15,7 @@ spec:
         app: sdx-seft
     spec:
       containers:
-      - image: eu.gcr.io/{{ .Values.project_id }}/sdx-seft:{{ .Chart.appVersion }}
+      - image: "eu.gcr.io/{{ .Values.project_id }}/sdx-seft:{{ .Chart.appVersion }}"
         imagePullPolicy: Always
         name: sdx-seft
         env:
