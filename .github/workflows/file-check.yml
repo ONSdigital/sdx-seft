@@ -1,11 +1,23 @@
-#name: File checker
-#
-#on:
-#  pull_request:
-#
-#jobs:
-#    steps:
-#      - name: "Check for Changed Files"
-#        uses: brettcannon/check-for-changed-files@v1.0.0
-#        with:
-#          file-pattern: "**/README.md"
+name: My Workflow
+on: push
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        # Checkout is required before did-files-change
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+          # be sure to override the default value (1) for fetch-depth
+
+      - name: Check changes
+        id: check-changes
+        uses: rdietrick/did-files-change@v1.2
+        with:
+          pathspec: README.md
+
+      - name: Debug
+        run: |
+          echo "Changes detected in test directory: ${{ steps.check-changes.outputs.changed }}"
