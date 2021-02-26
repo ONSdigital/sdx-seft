@@ -4,12 +4,8 @@ on:
   pull_request:
 
 jobs:
-  build:
-    name: Unit Tests
-    runs-on: ubuntu-latest
     steps:
     - name: Check for Changed Files
       uses: brettcannon/check-for-changed-files@v1.0.0
       with:
-        file-pattern: |
-          README.md
+        file-pattern: "**/README.md"
