@@ -29,6 +29,7 @@ jobs:
       uses: coroo/pytest-coverage-commentator@v1.0.2
       with:
         pytest-coverage: pytest-coverage.txt
+
     - name: Read Helm Chart
       id: chart
       uses: jacobtomlinson/gha-read-helm-chart@master
@@ -36,17 +37,3 @@ jobs:
         path: ./_helm/sdx-seft
     - name: Print outputs
       run: echo ${{ steps.chart.outputs.appVersion }}
-
-    - name: Checkout Main
-    - uses: actions/checkout@v2
-      with:
-        ref: main
-    - name: Read Main Helm Chart
-      id: chart-main
-      uses: jacobtomlinson/gha-read-helm-chart@master
-      with:
-        path: ./_helm/sdx-seft
-    - name: Print outputs
-      run: echo ${{ steps.chart-main.outputs.appVersion }}
-
-
