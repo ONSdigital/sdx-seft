@@ -20,4 +20,4 @@ jobs:
 
       - name: Debug
         run: |
-          echo "Changes detected in test directory: ${{ steps.check-changes.outputs.changed }}"
+          echo "Changes detected in README.md : ${{ steps.check-changes.outputs.changed }}"
