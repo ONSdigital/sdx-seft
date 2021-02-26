@@ -60,4 +60,4 @@ jobs:
           exit 1
         else:
           echo Version updated!
-
+        fi
