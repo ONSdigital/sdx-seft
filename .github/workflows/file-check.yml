@@ -23,8 +23,8 @@ jobs:
           number=${{ steps.check-changes.outputs.changed }}
           if [ $number -gt 0 ]
           then
-          echo "Changes detected in README.md : ${{ steps.check-changes.outputs.changed }}"
+            echo "Changes detected in README.md : ${{ steps.check-changes.outputs.changed }}"
           else
-          echo "No changes detected in README.md. Exiting"
-          exit 1
-
+            echo "No changes detected in README.md. Exiting"
+            exit 1
+          fi
