@@ -1,4 +1,4 @@
-name: Version Number
+name: Chart.yaml
 
 on:
   pull_request:
