@@ -30,23 +30,11 @@ jobs:
       with:
         pytest-coverage: pytest-coverage.txt
 
-    - uses: actions/checkout@v2
     - name: Read Helm Chart
-      id: branch-chart
+      id: chart
       uses: jacobtomlinson/gha-read-helm-chart@master
       with:
         path: ./_helm/sdx-seft
     - name: Print outputs
-      run: echo ${{ steps.branch-chart.outputs.appVersion }}
-
-    - uses: actions/checkout@v2
-      with:
-        ref: main
-    - name: main-chart
-      id: branch-chart
-      uses: jacobtomlinson/gha-read-helm-chart@master
-      with:
-        path: ./_helm/sdx-seft
-    - name: Print outputs
-      run: echo ${{ steps.branch-chart.outputs.appVersion }}
+      run: echo ${{ steps.chart.outputs.appVersion }}
 
