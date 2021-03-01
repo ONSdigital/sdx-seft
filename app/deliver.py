@@ -6,7 +6,6 @@ from requests.packages.urllib3.util.retry import Retry
 from requests.adapters import HTTPAdapter
 from requests.packages.urllib3.exceptions import MaxRetryError
 from requests.exceptions import ConnectionError
-
 from app import DELIVER_SERVICE_URL
 from app.errors import QuarantinableError, RetryableError
 
