@@ -60,9 +60,9 @@ the seft submission.
 ```
 
 #### Bucket
-SEFT submissions are too large to be sent via pubsub message. Therefore RAS-RM put the submission
-into a bucket within the SDX GCP project and save them under tx_id: `{project_id}-sefts`. SDX-Seft
-uses the tx_id within the PubSub message to collect the right data.
+SEFT submissions are too large to be sent via pubsub message. Therefore RAS-RM put submissions
+into a bucket within the SDX gcp project, under their tx_id. SDX-Seft
+uses the tx_id within the PubSub message to read the right data.
 
 ## Configuration
 
