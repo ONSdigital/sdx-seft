@@ -8,7 +8,7 @@ SDX-Seft service is responsible for SEFT submissions that are received from RAS-
 
 SEFT submissions are large, encrypted xml files that do not require any validation or transformation. RAS-RM put all SEFTs
 within a GCP bucket in the ons-sdx project space (encrypted). A PubSub message is then sent notifying sdx-seft of a new submission. 
-The SEFT service reads from the bucket and sends the data to sdx-deliver via HTTP: `deliver/seft`
+The SEFT service reads from the bucket and sends the data to SDX-Deliver via HTTP <POST> request: `deliver/seft`
 
 ## Getting started
 Install requirements:
