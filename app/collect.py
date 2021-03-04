@@ -12,11 +12,9 @@ logger = structlog.get_logger()
 def process(message_str: str):
 
     logger.info("processing message")
-    print(message_str)
     meta_dict = json.loads(message_str)
     tx_id = meta_dict.get("tx_id")
     filename = meta_dict.get("filename")
-
     try:
         data_bytes = read(filename)
         deliver_seft(meta_dict, data_bytes)
