@@ -32,7 +32,7 @@ def callback(message):
 def start():
 
     streaming_pull_future = CONFIG.SEFT_SUBSCRIBER.subscribe(CONFIG.SEFT_SUBSCRIPTION_PATH, callback=callback)
-    print(f"Listening for messages on {CONFIG.SEFT_SUBSCRIPTION_PATH}..\n")
+    logger.info(f"Listening for messages on {CONFIG.SEFT_SUBSCRIPTION_PATH}..\n")
 
     # Wrap subscriber in a 'with' block to automatically call close() when done.
     with CONFIG.SEFT_SUBSCRIBER:
