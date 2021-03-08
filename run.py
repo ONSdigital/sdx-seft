@@ -1,6 +1,10 @@
 from app import subscriber, cloud_config
+import structlog
+
+logger = structlog.get_logger()
+
 
 if __name__ == '__main__':
-    print('Starting SDX seft')
+    logger.info('Starting SDX SEFT')
     cloud_config()
     subscriber.start()
