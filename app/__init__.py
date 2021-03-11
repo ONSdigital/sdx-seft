@@ -1,9 +1,10 @@
 import os
+import structlog
 from app.logger import logging_config
 from google.cloud import pubsub_v1, storage
 
 logging_config()
-
+logger = structlog.get_logger()
 project_id = os.getenv('PROJECT_ID', 'ons-sdx-sandbox')
 DELIVER_SERVICE_URL = "sdx-deliver:80"
 
@@ -26,7 +27,7 @@ CONFIG = Config(project_id)
 
 
 def cloud_config():
-    print('Loading cloud config')
+    logger.info('Loading cloud config')
 
     storage_client = storage.Client(CONFIG.PROJECT_ID)
     CONFIG.BUCKET = storage_client.bucket(CONFIG.BUCKET_NAME)

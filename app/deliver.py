@@ -30,22 +30,23 @@ def deliver_seft(meta_dict: dict, file_bytes: bytes):
     filename = meta_dict['filename']
 
     response = post(filename, files)
+    status_code = response.status_code
 
-    if response.status_code == 200:
+    if status_code == 200:
         return True
-    elif 400 <= response.status_code < 500:
+    elif 400 <= status_code < 500:
         msg = "Bad Request response from sdx-deliver"
-        logger.info(msg)
+        logger.error(msg, status_code=status_code)
         raise QuarantinableError(msg)
     else:
         msg = "Bad response from sdx-deliver"
-        logger.info(msg)
+        logger.error(msg, status_code=status_code)
         raise RetryableError(msg)
 
 
 def post(filename: str, files: dict):
     url = f"http://{DELIVER_SERVICE_URL}/deliver/seft"
-    logger.info(f"calling {url}")
+    logger.info(f"Calling {url}")
     try:
         response = session.post(url, params={"filename": filename}, files=files)
     except MaxRetryError:
