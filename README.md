@@ -1,5 +1,6 @@
 # sdx-seft
 
+
 [![Build Status](https://github.com/ONSdigital/sdx-seft/workflows/Build/badge.svg)](https://github.com/ONSdigital/sdx-seft) [![Codacy Badge](https://api.codacy.com/project/badge/Grade/0d8f1899b0054322b9d0ec8f2bd62d86)](https://www.codacy.com/app/ons-sdc/sdx-seft?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=ONSdigital/sdx-seft&amp;utm_campaign=Badge_Grade)
 
 SDX-Seft service is responsible for SEFT submissions that are received from RAS-RM
@@ -82,3 +83,5 @@ uses the tx_id within the PubSub message to read the right data.
 Copyright © 2016, Office for National Statistics (https://www.ons.gov.uk)
 
 Released under MIT license, see [LICENSE](LICENSE) for details.
+
+

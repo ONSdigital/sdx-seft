@@ -11,7 +11,7 @@ logger = structlog.get_logger()
 
 def process(message_str: str):
 
-    logger.info("processing message")
+    logger.info("Processing message", message_str=message_str)
     meta_dict = json.loads(message_str)
     tx_id = meta_dict.get("tx_id")
     filename = meta_dict.get("filename")
@@ -20,7 +20,7 @@ def process(message_str: str):
         deliver_seft(meta_dict, data_bytes)
 
     except Exception as e:
-        logger.info("quarantining message")
+        logger.error("Quarantining message")
         logger.exception(e)
         quarantine_submission(message_str, tx_id)
 
