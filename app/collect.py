@@ -22,6 +22,6 @@ def process(message_str: str):
     except Exception as e:
         logger.error("Quarantining message")
         logger.exception(e)
-        quarantine_submission(message_str, tx_id)
+        quarantine_submission(message_str, tx_id, str(e))
 
 
