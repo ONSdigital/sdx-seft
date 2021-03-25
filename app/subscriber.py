@@ -5,7 +5,6 @@ from concurrent.futures import TimeoutError
 from structlog.contextvars import bind_contextvars, clear_contextvars
 from app import CONFIG
 from app.collect import process
-from app.errors import RetryableError
 from app.quarantine import quarantine_submission
 
 logger = structlog.get_logger()
@@ -16,13 +15,13 @@ def callback(message):
     bind_contextvars(app="SDX-SEFT")
     bind_contextvars(tx_id=tx_id)
     bind_contextvars(thread=threading.currentThread().getName())
-    encrypted_message_str = message.data.decode('utf-8')
     try:
+        encrypted_message_str = message.data.decode('utf-8')
         process(encrypted_message_str)
         message.ack()
     except Exception as e:
-        logger.error(f"error {str(e)}, quarantining message")
-        quarantine_submission(encrypted_message_str, tx_id, str(e))
+        logger.error(f"Quarantining message: error {str(e)}")
+        quarantine_submission(message, tx_id, str(e))
         message.ack()
     finally:
         clear_contextvars()
