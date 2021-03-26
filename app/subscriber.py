@@ -5,6 +5,7 @@ from concurrent.futures import TimeoutError
 from structlog.contextvars import bind_contextvars, clear_contextvars
 from app import CONFIG
 from app.collect import process
+from app.errors import RetryableError
 from app.quarantine import quarantine_submission
 
 logger = structlog.get_logger()
@@ -19,6 +20,9 @@ def callback(message):
         encrypted_message_str = message.data.decode('utf-8')
         process(encrypted_message_str)
         message.ack()
+    except RetryableError as err:
+        logger.error(f"Connection error: {str(err)}")
+        message.nack()
     except Exception as e:
         logger.error(f"Quarantining message: error {str(e)}")
         quarantine_submission(message, tx_id, str(e))
