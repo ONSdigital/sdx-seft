@@ -38,5 +38,5 @@ def cloud_config():
 
     # publish config
     quarantine_seft_publisher = pubsub_v1.PublisherClient()
-    CONFIG.QUARANTINE_SEFT_PUBLISHER = quarantine_seft_publisher.topic_path(CONFIG.PROJECT_ID, CONFIG.QUARANTINE_SEFT_TOPIC_ID)
+    CONFIG.QUARANTINE_TOPIC_PATH = quarantine_seft_publisher.topic_path(CONFIG.PROJECT_ID, CONFIG.QUARANTINE_SEFT_TOPIC_ID)
     CONFIG.QUARANTINE_SEFT_PUBLISHER = quarantine_seft_publisher
