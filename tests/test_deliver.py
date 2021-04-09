@@ -20,7 +20,6 @@ class TestDeliver(unittest.TestCase):
         return str(submission_exception.exception)
 
     def test_deliver_seft(self):
-
         with patch('app.deliver.post') as mock_post:
             mock_post.return_value = self.r
             self.r.status_code = 200
@@ -31,13 +30,13 @@ class TestDeliver(unittest.TestCase):
         with patch('app.deliver.post') as mock_post:
             mock_post.return_value = self.r
             self.r.status_code = 400
-            quarantine_exception_str = self.deliver_bad_response(self.seft_message, b'this is some bytes', QuarantinableError)
+            quarantine_exception_str = self.deliver_bad_response(self.seft_message, b'this is some bytes', RetryableError)
             self.assertEqual(quarantine_exception_str, quarantine_response)
 
     def test_retry_error(self):
         retry_response = "Bad response from sdx-deliver"
         with patch('app.deliver.post') as mock_post:
             mock_post.return_value = self.r
-            self.r.status_code = 300
-            retry_exception_str = self.deliver_bad_response(self.seft_message, b'this is some bytes', RetryableError)
+            self.r.status_code = 500
+            retry_exception_str = self.deliver_bad_response(self.seft_message, b'this is some bytes', QuarantinableError)
             self.assertEqual(retry_exception_str, retry_response)
