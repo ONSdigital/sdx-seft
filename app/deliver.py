@@ -37,11 +37,11 @@ def deliver_seft(meta_dict: dict, file_bytes: bytes):
     elif 400 <= status_code < 500:
         msg = "Bad Request response from sdx-deliver"
         logger.error(msg, status_code=status_code)
-        raise QuarantinableError(msg)
+        raise RetryableError(msg)
     else:
         msg = "Bad response from sdx-deliver"
         logger.error(msg, status_code=status_code)
-        raise RetryableError(msg)
+        raise QuarantinableError(msg)
 
 
 def post(filename: str, files: dict):

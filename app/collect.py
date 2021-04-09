@@ -10,7 +10,7 @@ logger = structlog.get_logger()
 
 def process(message_str: str):
 
-    logger.info("Processing message", message_str=message_str)
+    logger.info("Processing message")
     meta_dict = json.loads(message_str)
     filename = meta_dict.get("filename")
     data_bytes = read(filename)
