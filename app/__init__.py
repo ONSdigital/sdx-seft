@@ -13,7 +13,7 @@ class Config:
 
     def __init__(self, proj_id) -> None:
         self.PROJECT_ID = proj_id
-        self.BUCKET_NAME = f'{proj_id}-sefts'
+        self.BUCKET_NAME = f'{proj_id}-seft-responses'
         self.BUCKET = None
         self.SEFT_SUBSCRIPTION_ID = "seft-subscription"
         self.SEFT_SUBSCRIPTION_PATH = None
