@@ -4,8 +4,10 @@ metadata:
   name: sdx-seft
   labels:
     app: sdx-seft
+  annotations:
+    replicas: {{ quote .Values.replicaCount }}
 spec:
-  replicas: 1
+  replicas: {{ .Values.replica_count }}
   selector:
     matchLabels:
       app: sdx-seft
