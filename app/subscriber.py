@@ -12,6 +12,13 @@ logger = structlog.get_logger()
 
 
 def callback(message):
+    """
+    Manages the life cycle of the received message.
+    Handles pre processing events such as setting up logging bindings.
+    Extracts the data and passes it on to be processed.
+    Handles post processing events such acking the message and
+    catching exceptions raised during processing.
+    """
     tx_id = message.attributes.get('tx_id')
     bind_contextvars(app="SDX-SEFT")
     bind_contextvars(tx_id=tx_id)
@@ -32,6 +39,14 @@ def callback(message):
 
 
 def start():
+    """
+    Begin listening to the seft pubsub subscription.
+
+    This functions spawns new threads that listen to the subscription topic and
+    on receipt of a message invoke the callback function.
+
+    The main thread blocks indefinitely unless the connection times out
+    """
     streaming_pull_future = CONFIG.SEFT_SUBSCRIBER.subscribe(CONFIG.SEFT_SUBSCRIPTION_PATH, callback=callback)
     logger.info(f"Listening for messages on {CONFIG.SEFT_SUBSCRIPTION_PATH}..")
 
