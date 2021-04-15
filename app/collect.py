@@ -9,6 +9,9 @@ logger = structlog.get_logger()
 
 
 def process(message_str: str):
+    """
+    Retrieves the filename from the encrypted message and begins deliver_seft process
+    """
 
     logger.info("Processing message")
     meta_dict = json.loads(message_str)

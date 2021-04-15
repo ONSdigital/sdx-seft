@@ -10,6 +10,7 @@ DELIVER_SERVICE_URL = "sdx-deliver:80"
 
 
 class Config:
+    """class to hold required configuration data"""
 
     def __init__(self, proj_id) -> None:
         self.PROJECT_ID = proj_id
@@ -27,6 +28,13 @@ CONFIG = Config(project_id)
 
 
 def cloud_config():
+    """
+    Loads configuration required for running against GCP based environments
+
+    This function makes calls to GCP native tools such as Google PubSub
+    and therefore should not be called in situations where these connections are
+    not possible, e.g running the unit tests locally.
+    """
     logger.info('Loading cloud config')
 
     storage_client = storage.Client(CONFIG.PROJECT_ID)

@@ -21,6 +21,9 @@ session.mount('http://', HTTPAdapter(max_retries=retries))
 
 
 def deliver_seft(meta_dict: dict, file_bytes: bytes):
+    """
+    delivers a seft  submission. Returns True or raises appropriate error on response.
+    """
     meta_bytes = json.dumps(meta_dict).encode()
 
     files = {
@@ -45,6 +48,9 @@ def deliver_seft(meta_dict: dict, file_bytes: bytes):
 
 
 def post(filename: str, files: dict):
+    """
+    Constructs the http call to the seft deliver service endpoint and posts the request.
+    """
     url = f"http://{DELIVER_SERVICE_URL}/deliver/seft"
     logger.info(f"Calling {url}")
     try:

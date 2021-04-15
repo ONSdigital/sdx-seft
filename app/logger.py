@@ -17,6 +17,10 @@ class _MaxLevelFilter(object):
 
 
 def logging_config():
+    """
+    Handlers added to send logs to correct outputs. Configures structlogger inheriting config of base python logger.
+    Log messages are outputted as JSON.
+    """
     error_handler = logging.StreamHandler(sys.stderr)
     error_handler.setLevel(logging.ERROR)
 
