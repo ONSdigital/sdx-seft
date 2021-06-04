@@ -22,11 +22,11 @@ spec:
         name: sdx-seft
         resources:
           requests:
-            memory: "150Mi"
-            cpu: "500m"
+            memory: "512Mi"
+            cpu: "250m"
           limits:
-            memory: "900Mi"
-            cpu: "3000m"
+            memory: "512Mi"
+            cpu: "250m"
         env:
           - name: PROJECT_ID
             valueFrom:
