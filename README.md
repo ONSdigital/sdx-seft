@@ -54,7 +54,7 @@ the seft submission.
 
 **Message Data field Example**
 ```python
-    Data : {
+    data : {
         'filename': '11110000014H_202009_057_20210121143526',
         'md5sum': '12345',
         'period': '202009',
