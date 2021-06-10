@@ -1,4 +1,3 @@
-#registry_location: "ons-sdx-management"
-registry_location: "ons-sdx-tom"
+registry_location: "ons-sdx-management"
 
 replicaCount: 1
