@@ -20,6 +20,13 @@ spec:
       - image: eu.gcr.io/{{ .Values.registry_location }}/sdx-seft:{{ .Chart.AppVersion }}
         imagePullPolicy: Always
         name: sdx-seft
+        resources:
+          requests:
+            memory: "512Mi"
+            cpu: "250m"
+          limits:
+            memory: "512Mi"
+            cpu: "250m"
         env:
           - name: PROJECT_ID
             valueFrom:
