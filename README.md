@@ -3,13 +3,13 @@
 
 [![Build Status](https://github.com/ONSdigital/sdx-seft/workflows/Build/badge.svg)](https://github.com/ONSdigital/sdx-seft) [![Codacy Badge](https://api.codacy.com/project/badge/Grade/0d8f1899b0054322b9d0ec8f2bd62d86)](https://www.codacy.com/app/ons-sdc/sdx-seft?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=ONSdigital/sdx-seft&amp;utm_campaign=Badge_Grade)
 
-SDX-Seft service is responsible for SEFT submissions that are received from RAS-RM
+SDX-Seft service is responsible for SEFT submissions that are received from RAS-RM.
 
 ## Process
 
 SEFT submissions are large, encrypted xml files that do not require any validation or transformation. RAS-RM put all SEFTs
-within a GCP bucket in the ons-sdx project space (encrypted). A PubSub message is then sent notifying SDX-Seft of a new submission. 
-The SEFT service reads from the bucket and sends the data to SDX-Deliver via HTTP <POST> request: `deliver/seft`
+within a `{proj_id}-seft-responses` GCP bucket in the ons-sdx project space (encrypted). A PubSub message is then sent notifying SDX-Seft of a new submission. 
+The SEFT service reads from the bucket and sends the data to SDX-Deliver via HTTP <POST> request: `/deliver/seft`
 
 ## Getting started
 Install pipenv:
@@ -67,7 +67,7 @@ the seft submission.
 
 #### Bucket
 SEFT submissions are too large to be sent via pubsub message. Therefore RAS-RM put submissions
-into a bucket within the SDX gcp project, under their tx_id. SDX-Seft
+into a `{proj_id}-seft-responses` bucket within the SDX gcp project, under their tx_id. SDX-Seft
 uses the tx_id within the PubSub message to read the right data.
 
 ## Configuration
@@ -76,7 +76,7 @@ uses the tx_id within the PubSub message to read the right data.
 |----------------------------|------------------------------------
 | PROJECT_ID                 | Name of project
 | DELIVER_SERVICE_URL        | sdx-deliver URL `sdx-deliver:80`
-| BUCKET_NAME                | Name of the bucket: `{project_id}-sefts`
+| BUCKET_NAME                | Name of the bucket: `{project_id}-seft-responses`
 | BUCKET                     | Bucket client object
 | SEFT_SUBSCRIPTION_ID       | Subscription name: `seft-subscription`
 | SEFT_SUBSCRIBER            | Subscriber object
