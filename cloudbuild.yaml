@@ -1,7 +1,7 @@
 ---
 substitutions:
   _SERVICE_NAME: "${REPO_NAME}"
-  _IMAGE_PATH: "eu.gcr.io/${PROJECT_ID}/${BRANCH_NAME}/${REPO_NAME}"
+  _IMAGE_PATH: "eu.gcr.io/${PROJECT_ID}/${REPO_NAME}"
   _IMAGE_VERSION: "1.1.9"
 
 steps:
