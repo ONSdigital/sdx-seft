@@ -26,20 +26,22 @@ jobs:
           fetch-depth: 1
 
       - name: Read main version contents
-          id: main_version
-          run: |
-            ${ cat ./.version }
-
-    - name: Print main version
-      run: echo ${{ steps.main_version.outputs }}
+        id: main_version
+        run: |
+          echo "MAIN_VERSION=$(cat .version)" >> $GITHUB_OUTPUT
 
 
-    - name: Compare versions
-      run: |
-        if [ ${{ steps.new_version.outputs }} != ${{ steps.main_version.outputs }} ]
-        then
-          echo Version updated!
-        else
-          echo Version not updated!
-          exit 1
-        fi
+      - name: Print main version
+        run: |
+          echo ${{ env.MAIN_VERSION }}
+
+
+      - name: Compare versions
+        run: |
+          if [ ${{ env.NEW_VERSION }} != ${{ env.MAIN_VERSION }} ]
+          then
+            echo Version updated!
+          else
+            echo Version not updated!
+            exit 1
+          fi
