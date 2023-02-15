@@ -13,10 +13,10 @@ jobs:
       - name: Read version contents
         id: new_version
         run: |
-          ${ cat ./.version }
+          echo '::set-output name=NEW_VERSION::${ cat ./.version }'
 
       - name: Print Version
-          run: echo ${{ steps.new_version.outputs }}
+          run: echo ${{ steps.new_version.outputs.NEW_VERSION }}
 
       - name: Getting main version
         uses: actions/checkout@v2
