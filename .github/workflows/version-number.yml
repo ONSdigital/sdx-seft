@@ -17,7 +17,7 @@ jobs:
 
       - name: Print Version
           run: |
-            echo ${{ steps.new_version.outputs.NEW_VERSION }}"
+            echo ${{ env.NEW_VERSION }}"
 
       - name: Getting main version
         uses: actions/checkout@v2
