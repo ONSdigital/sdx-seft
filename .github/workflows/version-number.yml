@@ -16,7 +16,7 @@ jobs:
           ${ cat ./.version }
 
       - name: Print Version
-          run: echo ${{ steps.read_version.outputs }}
+          run: echo ${{ steps.new_version.outputs }}
 
       - name: Getting main version
         uses: actions/checkout@v2
