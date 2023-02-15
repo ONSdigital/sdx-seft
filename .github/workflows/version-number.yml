@@ -1,7 +1,7 @@
 name: Chart.yaml
 
 on:
-  push:
+  pull_request:
     branches:
       - '*'
 
