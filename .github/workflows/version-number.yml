@@ -13,7 +13,7 @@ jobs:
       - name: Read version contents
         id: new_version
         run: |
-          echo '::set-output name=NEW_VERSION::$(cat .version )'
+          echo "NEW_VERSION=$(cat .version)" >> $GITHUB_OUTPUT
 
       - name: Print Version
           run: |
