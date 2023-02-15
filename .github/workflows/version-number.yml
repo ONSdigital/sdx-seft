@@ -14,6 +14,7 @@ jobs:
         id: new_version
         run: |
           echo "NEW_VERSION=$(cat .version)" >> $GITHUB_OUTPUT
+          echo $(pwd)
           echo $(cat .version)
 
       - name: Print Version
