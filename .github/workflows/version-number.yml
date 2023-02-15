@@ -10,9 +10,9 @@ jobs:
     name: Checking Version Number
     runs-on: ubuntu-latest
     steps:
+      - uses: actions/checkout@v2
       - name: Read version contents
         id: new_version
-        uses: actions/checkout@v2
         run: |
           echo "NEW_VERSION=$(cat .version)" >> $GITHUB_OUTPUT
           echo $(pwd)
