@@ -5,7 +5,7 @@ from google.cloud import pubsub_v1, storage
 
 logging_config()
 logger = structlog.get_logger()
-project_id = os.getenv('PROJECT_ID', 'ons-sdx-sandbox')
+project_id = os.getenv('PROJECT_ID', 'ons-sdx-lucas')
 DELIVER_SERVICE_URL = "sdx-deliver:80"
 
 
