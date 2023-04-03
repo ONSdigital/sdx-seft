@@ -9,6 +9,7 @@ google = "~=3.0.0"
 google-cloud-storage = "==1.37.1"
 structlog = "==20.1.0"
 urllib3 = "==1.26.6"
+waitress = "*"
 
 [dev-packages]
 pytest = "==6.2.3"
