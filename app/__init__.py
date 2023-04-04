@@ -3,6 +3,7 @@ import structlog
 from app.logger import logging_config
 from google.cloud import pubsub_v1, storage
 from flask import Flask
+from app import routes
 
 logging_config()
 logger = structlog.get_logger()
@@ -52,5 +53,4 @@ def cloud_config():
 
 
 app = Flask(__name__)
-from app import routes
 
