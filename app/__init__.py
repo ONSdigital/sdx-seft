@@ -2,6 +2,7 @@ import os
 import structlog
 from app.logger import logging_config
 from google.cloud import pubsub_v1, storage
+from flask import Flask
 
 logging_config()
 logger = structlog.get_logger()
@@ -48,3 +49,8 @@ def cloud_config():
     quarantine_seft_publisher = pubsub_v1.PublisherClient()
     CONFIG.QUARANTINE_TOPIC_PATH = quarantine_seft_publisher.topic_path(CONFIG.PROJECT_ID, CONFIG.QUARANTINE_SEFT_TOPIC_ID)
     CONFIG.QUARANTINE_SEFT_PUBLISHER = quarantine_seft_publisher
+
+
+app = Flask(__name__)
+from app import routes
+
