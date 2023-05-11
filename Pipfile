@@ -4,10 +4,9 @@ verify_ssl = true
 name = "pypi"
 
 [packages]
-google-cloud-pubsub = "==2.4.1"
-google = "~=3.0.0"
-google-cloud-storage = "==1.37.1"
-structlog = "==20.1.0"
+google-cloud-pubsub = "==2.16.0"
+google-cloud-storage = "==2.8.0"
+structlog = "==23.1.0"
 urllib3 = "==1.26.6"
 
 [dev-packages]

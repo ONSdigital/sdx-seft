@@ -6,7 +6,7 @@ from google.cloud import pubsub_v1, storage
 logging_config()
 logger = structlog.get_logger()
 project_id = os.getenv('PROJECT_ID', 'ons-sdx-sandbox')
-DELIVER_SERVICE_URL = "sdx-deliver:80"
+deliver_service_url = os.getenv('DELIVER_SERVICE_URL', "sdx-deliver:80")
 
 
 class Config:
@@ -22,6 +22,7 @@ class Config:
         self.QUARANTINE_SEFT_TOPIC_ID = "quarantine-seft-topic"
         self.QUARANTINE_TOPIC_PATH = None
         self.QUARANTINE_SEFT_PUBLISHER = None
+        self.DELIVER_SERVICE_URL = deliver_service_url
 
 
 CONFIG = Config(project_id)
