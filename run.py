@@ -1,10 +1,11 @@
-from app import subscriber, cloud_config
-import structlog
+from sdx_gcp.app import get_logger
 
-logger = structlog.get_logger()
+from app import sdx_app, CONFIG
+from app.collect import process, get_tx_id
+
+logger = get_logger()
 
 
 if __name__ == '__main__':
-    logger.info('Starting SDX SEFT')
-    cloud_config()
-    subscriber.start()
+    sdx_app.add_pubsub_endpoint(process, CONFIG.QUARANTINE_TOPIC_ID, tx_id_getter=get_tx_id)
+    sdx_app.run(port=5000)
