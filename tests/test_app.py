@@ -4,8 +4,8 @@ import unittest
 from unittest.mock import patch, Mock
 
 from sdx_gcp import Message, Envelope
+from sdx_gcp.app import SdxApp
 
-from app import sdx_app
 from app.collect import process, get_tx_id
 from app.deliver import FILE_NAME, METADATA_FILE, SEFT_FILE
 
@@ -16,22 +16,24 @@ def convert_data(data: dict) -> str:
 
 class TestApp(unittest.TestCase):
 
-    data = {
-        'filename': 'test.seft',
-        'tx_id': '123',
-        'survey_id': '057',
-        'period': '202009',
-        'ru_ref': '20210121143526',
-        'md5sum': '12345',
-        'sizeBytes': 42
-    }
+    def setUp(self) -> None:
 
-    message: Message = {
-        "attributes": {},
-        "data": "",
-        "message_id": "123",
-        "publish_time": "today"
-    }
+        self.data = {
+            'filename': 'test.seft',
+            'tx_id': '123',
+            'survey_id': '057',
+            'period': '202009',
+            'ru_ref': '20210121143526',
+            'md5sum': '12345',
+            'sizeBytes': 42
+        }
+
+        self.message: Message = {
+            "attributes": {},
+            "data": "",
+            "message_id": "123",
+            "publish_time": "today"
+        }
 
     @patch('app.collect.sdx_app')
     @patch('app.deliver.sdx_app.http_post')
@@ -67,7 +69,10 @@ class TestApp(unittest.TestCase):
             'message': self.message,
             'subscription': 'seft_subscription'
         }
+
+        sdx_app = SdxApp("sdx-seft", "ons-sdx-sandbox")
         sdx_app.add_pubsub_endpoint(process, "quarantine_topic", tx_id_getter=get_tx_id)
+
         with sdx_app.app.test_client() as c:
             resp = c.post("/", json=envelope)
             self.assertEqual(204, resp.status_code)
@@ -83,7 +88,10 @@ class TestApp(unittest.TestCase):
             'message': self.message,
             'subscription': 'seft_subscription'
         }
+
+        sdx_app = SdxApp("sdx-seft", "ons-sdx-sandbox")
         sdx_app.add_pubsub_endpoint(process, "quarantine_topic", tx_id_getter=get_tx_id)
+
         with sdx_app.app.test_client() as c:
             resp = c.post("/", json=envelope)
             self.assertEqual(204, resp.status_code)
