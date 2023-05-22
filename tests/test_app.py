@@ -7,7 +7,7 @@ from sdx_gcp import Message, Envelope
 from sdx_gcp.app import SdxApp
 
 from app.collect import process, get_tx_id
-from app.deliver import FILE_NAME, METADATA_FILE, SEFT_FILE
+from app.deliver import FILE_NAME, METADATA_FILE, SEFT_FILE, TX_ID
 
 
 def convert_data(data: dict) -> str:
@@ -53,7 +53,7 @@ class TestApp(unittest.TestCase):
             deliver_url,
             "deliver/seft",
             None,
-            params={FILE_NAME: 'test.seft'},
+            params={FILE_NAME: 'test.seft', TX_ID: '123'},
             files={
                 METADATA_FILE: meta_bytes,
                 SEFT_FILE: file_bytes
