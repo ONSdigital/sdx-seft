@@ -39,6 +39,7 @@ class TestApp(unittest.TestCase):
     @patch('app.deliver.sdx_app.http_post')
     @patch('app.deliver.CONFIG')
     def test_process(self, mock_config: Mock, mock_post: Mock, mock_app: Mock):
+        tx_id = '123'
         file_bytes = b'seft_file_content'
         meta_bytes = json.dumps(self.data).encode()
         deliver_url = "sdx-deliver-url"
@@ -47,13 +48,13 @@ class TestApp(unittest.TestCase):
         mock_config.DELIVER_SERVICE_URL = deliver_url
         mock_app.gcs_read.return_value = file_bytes
 
-        process(self.message)
+        process(self.message, tx_id)
 
         mock_post.assert_called_with(
             deliver_url,
             "deliver/seft",
             None,
-            params={FILE_NAME: 'test.seft', TX_ID: '123'},
+            params={FILE_NAME: 'test.seft', TX_ID: tx_id},
             files={
                 METADATA_FILE: meta_bytes,
                 SEFT_FILE: file_bytes

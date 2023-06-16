@@ -1,5 +1,5 @@
 import json
-from sdx_gcp import Message, get_data, Request, get_message
+from sdx_gcp import Message, get_data, Request, get_message, TX_ID
 from sdx_gcp.app import get_logger
 from sdx_gcp.errors import DataError
 
@@ -10,7 +10,7 @@ from app.deliver import deliver_seft
 logger = get_logger()
 
 
-def process(message: Message):
+def process(message: Message, tx_id: TX_ID):
     """
     Retrieves the filename from the encrypted message and begins deliver_seft process
     """
@@ -24,7 +24,7 @@ def process(message: Message):
     data_bytes = sdx_app.gcs_read(filename, CONFIG.BUCKET_NAME)
     deliver_seft(meta_dict, data_bytes)
 
-    logger.info(f"Process completed successfully")
+    logger.info("Process completed successfully")
 
 
 def get_tx_id(req: Request) -> str:
