@@ -11,29 +11,6 @@ SEFT submissions are large, encrypted xml files that do not require any validati
 within a `{proj_id}-seft-responses` GCP bucket in the ons-sdx project space (encrypted). A PubSub message is then sent notifying SDX-Seft of a new submission. 
 The SEFT service reads from the bucket and sends the data to SDX-Deliver via HTTP <POST> request: `/deliver/seft`
 
-## Getting started
-Install pipenv:
-```shell
-$ pip install pipenv
-```
-
-Create a virtualenv and install dependencies
-```shell
-$ make build
-```
-
-Testing:
-Install all test requirements and run tests:
-```shell
-$ make test
-```
-
-Running:
-ensure you have installed all requirements with above `make build` command then:
-```shell
-$ make start
-```
-
 ## GCP
 
 #### Pubsub
