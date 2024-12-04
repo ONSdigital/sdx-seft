@@ -6,3 +6,5 @@ steps:
     pip install -r requirements.txt
     pip install -r test-requirements.txt
     pytest -v --cov-report term-missing --disable-warnings --cov=app tests/
+options:
+  defaultLogsBucketBehavior: REGIONAL_USER_OWNED_BUCKET
