@@ -57,4 +57,4 @@ def deliver_seft(meta_dict: Metadata, file_bytes: bytes):
                           endpoint,
                           None,
                           params={FILE_NAME: filename, TX_ID: tx_id, CONTEXT: context_json},
-                          files={SEFT_FILE_V2: files})
+                          files={SEFT_FILE_V2: file_bytes})
