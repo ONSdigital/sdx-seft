@@ -38,7 +38,9 @@ class TestApp(unittest.TestCase):
     @patch('app.collect.sdx_app')
     @patch('app.deliver.sdx_app.http_post')
     @patch('app.deliver.CONFIG')
-    def test_process(self, mock_config: Mock, mock_post: Mock, mock_app: Mock):
+    @patch('app.deliver.use_v2_endpoint')
+    def test_process(self, mock_use_v2: Mock, mock_config: Mock, mock_post: Mock, mock_app: Mock):
+        mock_use_v2.return_value = False
         tx_id = '123'
         file_bytes = b'seft_file_content'
         meta_bytes = json.dumps(self.data).encode()
@@ -63,7 +65,9 @@ class TestApp(unittest.TestCase):
 
     @patch('app.collect.deliver_seft')
     @patch('app.collect.sdx_app')
-    def test_success_returns_204(self, mock_app: Mock, mock_deliver: Mock):
+    @patch('app.deliver.use_v2_endpoint')
+    def test_success_returns_204(self, mock_use_v2: Mock, mock_app: Mock, mock_deliver: Mock):
+        mock_use_v2.return_value = False
         mock_app.gcs_read.return_value = b'seft_file_content'
         self.message['data'] = convert_data(self.data)
         envelope: Envelope = {
@@ -81,7 +85,9 @@ class TestApp(unittest.TestCase):
     @patch('app.collect.deliver_seft')
     @patch('app.collect.sdx_app')
     @patch('sdx_gcp.handlers.quarantine_error')
-    def test_missing_filename_gets_quarantined(self, mock_quarantine: Mock, mock_app: Mock, mock_deliver: Mock):
+    @patch('app.deliver.use_v2_endpoint')
+    def test_missing_filename_gets_quarantined(self, mock_use_v2: Mock, mock_quarantine: Mock, mock_app: Mock, mock_deliver: Mock):
+        mock_use_v2.return_value = False
         mock_app.gcs_read.return_value = b'seft_file_content'
         del self.data['filename']
         self.message['data'] = convert_data(self.data)
