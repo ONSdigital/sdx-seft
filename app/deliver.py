@@ -18,10 +18,10 @@ logger = get_logger()
 
 
 def use_v2_endpoint():
-    if CONFIG.PROJECT_ID == "ons-sdx-prod" or CONFIG.PROJECT_ID == "ons-sdx-ci":
-        return False
+    if CONFIG.PROJECT_ID == "ons-sdx-preprod" or CONFIG.PROJECT_ID == "ons-sdx-nifi":
+        return True
 
-    return True
+    return False
 
 
 def deliver_seft(meta_dict: Metadata, file_bytes: bytes):
