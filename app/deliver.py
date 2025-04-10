@@ -49,7 +49,8 @@ def deliver_seft(meta_dict: Metadata, file_bytes: bytes):
             "period_id": meta_dict["period"],
             "ru_ref": meta_dict["ru_ref"],
             "tx_id": tx_id,
-            "survey_type": "seft"
+            "survey_type": "seft",
+            "context_type": "business_survey"
         }
         context_json: str = json.dumps(context)
 
