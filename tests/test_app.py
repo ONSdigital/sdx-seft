@@ -7,7 +7,7 @@ from sdx_gcp import Message, Envelope
 from sdx_gcp.app import SdxApp
 
 from app.collect import process, get_tx_id
-from app.deliver import FILE_NAME, METADATA_FILE, SEFT_FILE, TX_ID
+from app.deliver import FILE_NAME, TX_ID, SEFT_FILE_V2, CONTEXT
 
 
 def convert_data(data: dict) -> str:
@@ -38,12 +38,9 @@ class TestApp(unittest.TestCase):
     @patch('app.collect.sdx_app')
     @patch('app.deliver.sdx_app.http_post')
     @patch('app.deliver.CONFIG')
-    @patch('app.deliver.use_v2_endpoint')
-    def test_process(self, mock_use_v2: Mock, mock_config: Mock, mock_post: Mock, mock_app: Mock):
-        mock_use_v2.return_value = False
+    def test_process(self, mock_config: Mock, mock_post: Mock, mock_app: Mock):
         tx_id = '123'
         file_bytes = b'seft_file_content'
-        meta_bytes = json.dumps(self.data).encode()
         deliver_url = "sdx-deliver-url"
 
         self.message['data'] = convert_data(self.data)
@@ -52,22 +49,29 @@ class TestApp(unittest.TestCase):
 
         process(self.message, tx_id)
 
+        expected_context = {
+            "survey_id": "057",
+            "period_id": "202009",
+            "ru_ref": "20210121143526",
+            "tx_id": "123",
+            "survey_type": "seft",
+            "context_type": "business_survey"
+        }
+        expected_context_json: str = json.dumps(expected_context)
+
         mock_post.assert_called_with(
             deliver_url,
-            "deliver/seft",
+            "deliver/v2/seft",
             None,
-            params={FILE_NAME: 'test.seft', TX_ID: tx_id},
+            params={FILE_NAME: 'test.seft', TX_ID: tx_id, CONTEXT: expected_context_json},
             files={
-                METADATA_FILE: meta_bytes,
-                SEFT_FILE: file_bytes
+                SEFT_FILE_V2: file_bytes
             }
         )
 
     @patch('app.collect.deliver_seft')
     @patch('app.collect.sdx_app')
-    @patch('app.deliver.use_v2_endpoint')
-    def test_success_returns_204(self, mock_use_v2: Mock, mock_app: Mock, mock_deliver: Mock):
-        mock_use_v2.return_value = False
+    def test_success_returns_204(self, mock_app: Mock, _mock_deliver: Mock):
         mock_app.gcs_read.return_value = b'seft_file_content'
         self.message['data'] = convert_data(self.data)
         envelope: Envelope = {
@@ -85,9 +89,7 @@ class TestApp(unittest.TestCase):
     @patch('app.collect.deliver_seft')
     @patch('app.collect.sdx_app')
     @patch('sdx_gcp.handlers.quarantine_error')
-    @patch('app.deliver.use_v2_endpoint')
-    def test_missing_filename_gets_quarantined(self, mock_use_v2: Mock, mock_quarantine: Mock, mock_app: Mock, mock_deliver: Mock):
-        mock_use_v2.return_value = False
+    def test_missing_filename_gets_quarantined(self, mock_quarantine: Mock, mock_app: Mock, _mock_deliver: Mock):
         mock_app.gcs_read.return_value = b'seft_file_content'
         del self.data['filename']
         self.message['data'] = convert_data(self.data)
