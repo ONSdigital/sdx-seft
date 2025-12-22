@@ -1,10 +1,9 @@
 steps:
 - id: 'Unit Tests'
-  name: 'europe-west2-docker.pkg.dev/ons-sdx-ci/sdx-apps/sdx-gcp:1.4.4'
+  name: 'ghcr.io/astral-sh/uv:python3.13-alpine'
   script: |
-    #!/usr/bin/env bash
-    pip install -r requirements.txt
-    pip install -r test-requirements.txt
-    pytest -v --cov-report term-missing --disable-warnings --cov=app tests/
+    apk add --no-cache gnupg
+    uv sync --frozen
+    uv run pytest -v --cov-report term-missing --disable-warnings --cov=app tests/
 options:
   defaultLogsBucketBehavior: REGIONAL_USER_OWNED_BUCKET
