@@ -1,7 +1,8 @@
 # sdx-seft
 
 
-[![Build Status](https://github.com/ONSdigital/sdx-seft/workflows/Build/badge.svg)](https://github.com/ONSdigital/sdx-seft) [![Codacy Badge](https://api.codacy.com/project/badge/Grade/0d8f1899b0054322b9d0ec8f2bd62d86)](https://www.codacy.com/app/ons-sdc/sdx-seft?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=ONSdigital/sdx-seft&amp;utm_campaign=Badge_Grade)
+![Version](https://ons-badges-752336435892.europe-west2.run.app/api/badge/custom?left=Python&right=3.13)
+
 
 SDX-Seft service is responsible for SEFT submissions that are received from RAS-RM.
 
