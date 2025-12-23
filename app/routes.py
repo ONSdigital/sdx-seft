@@ -23,7 +23,7 @@ async def handle(
         # Process the message
         process_service.process_message(message)
     except DataError as e:
-        quarantine_reason = f"DataError: {str(e)}"
-        process_service.quarantine_message(message, quarantine_reason)
+        process_service.quarantine_message(message, str(e))
 
+    # Ack message (even in case of error, as it has been quarantined)
     return Response(status_code=204)
