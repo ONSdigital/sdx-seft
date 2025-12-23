@@ -6,7 +6,7 @@ from sdx_base.models.pubsub import Message, get_data
 
 from app import get_logger
 from app.services.deliver_service import DeliverService
-from app.settings import Settings
+from app.settings import SettingsProtocol
 
 logger = get_logger()
 
@@ -23,7 +23,7 @@ class ReadProtocol(Protocol):
 class ProcessService:
 
     def __init__(self,
-                 settings: Settings,
+                 settings: SettingsProtocol,
                  storage_service: ReadProtocol,
                  deliver_service: DeliverService
                  ):

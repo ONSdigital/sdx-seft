@@ -5,7 +5,7 @@ import requests
 
 from app import get_logger
 from app.definitions import Metadata
-from app.settings import Settings
+from app.settings import SettingsProtocol
 
 logger = get_logger()
 
@@ -29,7 +29,7 @@ class HttpProtocol(Protocol):
 
 class DeliverService:
 
-    def __init__(self, settings: Settings, http_service: HttpProtocol):
+    def __init__(self, settings: SettingsProtocol, http_service: HttpProtocol):
 
         self._settings = settings
         self._http_service = http_service
