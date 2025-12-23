@@ -7,12 +7,11 @@ import pytest
 
 from sdx_base.errors.errors import DataError
 from sdx_base.models.pubsub import Message
-from sdx_base.services.pubsub import PubsubService
 
 from app.services.process_service import (
     ProcessService,
     SettingsProtocol,
-    ReadProtocol,
+    ReadProtocol, PubsubProtocol,
 )
 from app.services.deliver_service import DeliverService
 
@@ -56,20 +55,22 @@ def deliver_service() -> DeliverService:
 
 
 @pytest.fixture
-def pubsub_service() -> PubsubService:
-    return Mock(spec=PubsubService)
+def pubsub_service() -> PubsubProtocol:
+    return cast(PubsubProtocol, Mock(spec=PubsubProtocol))
 
 
 def test_process_message_reads_file_and_delivers_seft(
     settings: SettingsProtocol,
     storage_service: ReadProtocol,
     deliver_service: DeliverService,
+    pubsub_service: PubsubProtocol,
 ):
     # Create ProcessService instance
     process_service = ProcessService(
         settings=settings,
         storage_service=storage_service,
         deliver_service=deliver_service,
+        pubsub_service=pubsub_service,
     )
 
     # Set up a valid metadata dictionary
@@ -104,12 +105,14 @@ def test_process_message_raises_error_when_filename_missing(
     settings: SettingsProtocol,
     storage_service: ReadProtocol,
     deliver_service: DeliverService,
+    pubsub_service: PubsubProtocol,
 ):
     # Arrange
     process_service = ProcessService(
         settings=settings,
         storage_service=storage_service,
         deliver_service=deliver_service,
+        pubsub_service=pubsub_service
     )
 
     # Set up invalid metadata dictionary (missing filename)
@@ -128,7 +131,7 @@ def test_quarantine_message_calls_pubsub_correctly(
     settings: SettingsProtocol,
     storage_service: ReadProtocol,
     deliver_service: DeliverService,
-    pubsub_service: PubsubService,
+    pubsub_service: PubsubProtocol,
 ):
     # Arrange
     process_service = ProcessService(

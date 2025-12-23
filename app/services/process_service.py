@@ -28,13 +28,19 @@ class SettingsProtocol(Protocol):
         ...
 
 
+class PubsubProtocol(Protocol):
+
+    def quarantine_error(self, quarantine_topic_path: str, error: Exception, message: str, tx_id: str) -> str:
+        ...
+
+
 class ProcessService:
 
     def __init__(self,
                  settings: SettingsProtocol,
                  storage_service: ReadProtocol,
                  deliver_service: DeliverService,
-                 pubsub_service: PubsubService
+                 pubsub_service: PubsubProtocol
                  ):
         self._settings = settings
         self._storage_service = storage_service
