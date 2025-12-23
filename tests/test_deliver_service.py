@@ -15,15 +15,15 @@ from app.services.deliver_service import (
 
 
 @pytest.fixture
-def settings() -> Mock[SettingsProtocol]:
+def settings() -> SettingsProtocol:
     settings = Mock(spec=SettingsProtocol)
     settings.deliver_service_url = "https://sdx-deliver.test"
-    return settings
+    return cast(SettingsProtocol, settings)
 
 
 @pytest.fixture
-def http_service() -> Mock[HttpProtocol]:
-    return Mock(spec=HttpProtocol)
+def http_service() -> HttpProtocol:
+    return cast(HttpProtocol, Mock(spec=HttpProtocol))
 
 
 def test_deliver_seft_posts_correct_payload(
