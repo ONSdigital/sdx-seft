@@ -1,4 +1,5 @@
 import json
+from typing import cast
 from unittest.mock import Mock
 
 import pytest
@@ -14,18 +15,21 @@ from app.services.deliver_service import (
 
 
 @pytest.fixture
-def settings():
+def settings() -> Mock[SettingsProtocol]:
     settings = Mock(spec=SettingsProtocol)
     settings.deliver_service_url = "https://sdx-deliver.test"
     return settings
 
 
 @pytest.fixture
-def http_service():
+def http_service() -> Mock[HttpProtocol]:
     return Mock(spec=HttpProtocol)
 
 
-def test_deliver_seft_posts_correct_payload(settings, http_service):
+def test_deliver_seft_posts_correct_payload(
+        settings: SettingsProtocol,
+        http_service: HttpProtocol):
+
     # Arrange
     service = DeliverService(settings=settings, http_service=http_service)
 
