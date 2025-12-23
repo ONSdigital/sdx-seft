@@ -15,10 +15,17 @@ test:
 	uv run --dev pytest -v --cov-report term-missing --disable-warnings --cov=app tests/
 
 
+.PHONY: dev
+dev:
+	@echo "Starting development server..."
+	uv run run.py
+
+
 .PHONY: lint
 lint:
 	@echo "Running Ruff linter..."
 	uv run --only-group lint ruff check --fix
+
 
 .PHONY: bump
 bump:
