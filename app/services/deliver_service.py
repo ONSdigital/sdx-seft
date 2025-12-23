@@ -1,7 +1,7 @@
 import json
-from typing import Final
+from typing import Final, Protocol
 
-from sdx_base.services.http import HttpService
+import requests
 
 from app import get_logger
 from app.definitions import Metadata
@@ -17,12 +17,21 @@ TX_ID: Final[str] = "tx_id"
 SEFT_FILE_V2: Final[str] = 'seft_file'
 
 
+class HttpProtocol(Protocol):
+    def post(self,
+             domain: str,
+             endpoint: str,
+             json_data: str | None = None,
+             params: dict[str, str] | None = None,
+             files: dict[str, bytes] | None = None) -> requests.Response:
+        ...
+
+
 class DeliverService:
 
-    def __init__(self, settings: Settings, http_service: HttpService):
+    def __init__(self, settings: Settings, http_service: HttpProtocol):
 
         self._settings = settings
-        # TODO make this protocol
         self._http_service = http_service
 
     def deliver_seft(self, meta_dict: Metadata, file_bytes: bytes):

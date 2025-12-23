@@ -1,8 +1,8 @@
 import json
+from typing import Protocol, Optional
 
 from sdx_base.errors.errors import DataError
 from sdx_base.models.pubsub import Message, get_data
-from sdx_base.services.storage import StorageService
 
 from app import get_logger
 from app.services.deliver_service import DeliverService
@@ -11,11 +11,20 @@ from app.settings import Settings
 logger = get_logger()
 
 
+class ReadProtocol(Protocol):
+    def read(self,
+             filename: str,
+             bucket_name: str,
+             sub_dir: Optional[str] = None,
+             project_id: Optional[str] = None) -> bytes:
+        ...
+
+
 class ProcessService:
 
     def __init__(self,
                  settings: Settings,
-                 storage_service: StorageService,
+                 storage_service: ReadProtocol,
                  deliver_service: DeliverService
                  ):
         self._settings = settings
