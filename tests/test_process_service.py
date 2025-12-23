@@ -1,6 +1,7 @@
+import base64
 import json
 from typing import cast
-from unittest.mock import Mock
+from unittest.mock import Mock, MagicMock
 
 import pytest
 
@@ -13,6 +14,22 @@ from app.services.process_service import (
     ReadProtocol,
 )
 from app.services.deliver_service import DeliverService
+
+
+def make_pubsub_message(payload: dict) -> Message:
+    """
+    Helpers to create a mock Pub/Sub message with base64 encoded data
+    :param payload:
+    :return:
+    """
+    message = MagicMock(spec=Message)
+
+    encoded = base64.b64encode(
+        json.dumps(payload).encode("utf-8")
+    )
+
+    message.__getitem__.side_effect = lambda key: encoded if key == "data" else None
+    return cast(Message, message)
 
 
 @pytest.fixture
@@ -57,8 +74,7 @@ def test_process_message_reads_file_and_delivers_seft(
     }
 
     # Cast mock to Message type to stop pycharm complaining
-    message = cast(Message, Mock(spec=Message))
-    message.data = json.dumps(meta_dict).encode()
+    message = make_pubsub_message(meta_dict)
 
     # call the process_message method
     process_service.process_message(message)
@@ -88,11 +104,8 @@ def test_process_message_raises_error_when_filename_missing(
         deliver_service=deliver_service,
     )
 
-    # Cast mock to Message type to stop pycharm complaining
-    message = cast(Message, Mock(spec=Message))
-
     # Set up invalid metadata dictionary (missing filename)
-    message.data = json.dumps({"tx_id": "tx-123"}).encode()
+    message = make_pubsub_message({"tx_id": "tx-123"})
 
     # Assert that DataError is raised
     with pytest.raises(DataError):
