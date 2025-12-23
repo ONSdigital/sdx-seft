@@ -30,9 +30,10 @@ def test_deliver_seft_posts_correct_payload(
         settings: SettingsProtocol,
         http_service: HttpProtocol):
 
-    # Arrange
+    # Create a Deliver service instance
     service = DeliverService(settings=settings, http_service=http_service)
 
+    # Set up a metadata dictionary
     meta_dict = Metadata(**{
         "filename": "test.seft",
         "tx_id": "tx-123",
@@ -41,6 +42,7 @@ def test_deliver_seft_posts_correct_payload(
         "ru_ref": "12345678901",
     })
 
+    # Set up SEFT file bytes
     file_bytes = b"seft-file-content"
 
     expected_context = {
@@ -52,12 +54,13 @@ def test_deliver_seft_posts_correct_payload(
         "context_type": "business_survey",
     }
 
-    # Act
+    # Call the deliver_seft method
     service.deliver_seft(meta_dict, file_bytes)
 
-    # Assert
+    # Assert that the HTTP POST was called once
     http_service.post.assert_called_once()
 
+    # Extract the arguments used in the HTTP POST call for verification
     domain, endpoint = http_service.post.call_args.args
     kwargs = http_service.post.call_args.kwargs
 
