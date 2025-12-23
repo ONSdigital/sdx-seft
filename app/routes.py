@@ -1,5 +1,6 @@
 
 from fastapi import APIRouter, Depends
+from sdx_base.errors.errors import DataError
 from sdx_base.models.pubsub import Message, get_message
 from starlette.requests import Request
 from starlette.responses import Response
@@ -18,7 +19,11 @@ async def handle(
     # Fetch the Pub/Sub message
     message: Message = await get_message(request)
 
-    # Process the message # TODO check if data error is handled here or in BASE
-    process_service.process_message(message)
+    try:
+        # Process the message
+        process_service.process_message(message)
+    except DataError as e:
+        quarantine_reason = f"DataError: {str(e)}"
+        process_service.quarantine_message(message, quarantine_reason)
 
     return Response(status_code=204)

@@ -3,6 +3,7 @@ from typing import Protocol, Optional
 
 from sdx_base.errors.errors import DataError
 from sdx_base.models.pubsub import Message, get_data
+from sdx_base.services.pubsub import PubsubService
 
 from app import get_logger
 from app.services.deliver_service import DeliverService
@@ -20,6 +21,8 @@ class ReadProtocol(Protocol):
 
 
 class SettingsProtocol(Protocol):
+    project_id: str
+    quarantine_topic_id: str
 
     def get_bucket_name(self) -> str:
         ...
@@ -30,11 +33,13 @@ class ProcessService:
     def __init__(self,
                  settings: SettingsProtocol,
                  storage_service: ReadProtocol,
-                 deliver_service: DeliverService
+                 deliver_service: DeliverService,
+                 pubsub_service: PubsubService
                  ):
         self._settings = settings
         self._storage_service = storage_service
         self._deliver_service = deliver_service
+        self._pubsub_service = pubsub_service
 
     def process_message(self, message: Message):
 
@@ -55,3 +60,20 @@ class ProcessService:
         self._deliver_service.deliver_seft(meta_dict, data_bytes)
 
         logger.info("Process completed successfully")
+
+    def quarantine_message(self, message: Message, reason: str):
+
+        # Decode the Pub/Sub message data
+        data: str = get_data(message)
+
+        # Extract the tx_id
+        tx_id = json.loads(data)["tx_id"]
+
+        logger.info(f"Quarantining message with data: {data} for reason: {reason}")
+        self._pubsub_service.quarantine_error(
+            f"projects/{self._settings.project_id}/topics/{self._settings.quarantine_topic_id}",
+            DataError,
+            reason,
+            tx_id
+        )
+        logger.info("Quarantine completed successfully")
