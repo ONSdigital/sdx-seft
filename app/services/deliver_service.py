@@ -5,7 +5,6 @@ import requests
 
 from app import get_logger
 from app.definitions import Metadata
-from app.settings import SettingsProtocol
 
 logger = get_logger()
 
@@ -25,6 +24,10 @@ class HttpProtocol(Protocol):
              params: dict[str, str] | None = None,
              files: dict[str, bytes] | None = None) -> requests.Response:
         ...
+
+
+class SettingsProtocol(Protocol):
+    deliver_service_url: str
 
 
 class DeliverService:

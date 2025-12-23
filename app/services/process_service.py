@@ -6,7 +6,6 @@ from sdx_base.models.pubsub import Message, get_data
 
 from app import get_logger
 from app.services.deliver_service import DeliverService
-from app.settings import SettingsProtocol
 
 logger = get_logger()
 
@@ -17,6 +16,12 @@ class ReadProtocol(Protocol):
              bucket_name: str,
              sub_dir: Optional[str] = None,
              project_id: Optional[str] = None) -> bytes:
+        ...
+
+
+class SettingsProtocol(Protocol):
+
+    def get_bucket_name(self) -> str:
         ...
 
 

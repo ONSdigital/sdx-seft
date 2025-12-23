@@ -1,15 +1,5 @@
-from typing import Protocol
 
 from sdx_base.settings.app import AppSettings, get_settings
-
-
-class SettingsProtocol(Protocol):
-
-    quarantine_topic_id: str
-    deliver_service_url: str
-
-    def get_bucket_name(self) -> str:
-        ...
 
 
 class Settings(AppSettings):
