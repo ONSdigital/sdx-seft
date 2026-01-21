@@ -1,6 +1,6 @@
 [project]
 name = "sdx-seft"
-version = "2.2.3"
+version = "2.2.4"
 description = "SDX-Seft service is responsible for SEFT submissions that are received from RAS-RM."
 requires-python = "==3.13.*"
 dependencies = [

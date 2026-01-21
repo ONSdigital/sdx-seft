@@ -657,7 +657,7 @@ wheels = [
 
 [[package]]
 name = "sdx-seft"
-version = "2.2.1"
+version = "2.2.4"
 source = { virtual = "." }
 dependencies = [
     { name = "sdx-gcp" },
@@ -678,7 +678,7 @@ version-check = [
 ]
 
 [package.metadata]
-requires-dist = [{ name = "sdx-gcp", specifier = "==1.4.4" }]
+requires-dist = [{ name = "sdx-gcp", specifier = "==1.4.4", index = "https://europe-west2-python.pkg.dev/ons-sdx-ci/sdx-python-packages/simple/" }]
 
 [package.metadata.requires-dev]
 dev = [
