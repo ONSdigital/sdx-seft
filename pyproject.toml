@@ -25,7 +25,7 @@ version-check = [
 
 
 [tool.uv.sources]
-sdx-base = { index = "sdx-repo" }
+sdx-gcp= { index = "sdx-repo" }
 
 [[tool.uv.index]]
 name = "sdx-repo"
