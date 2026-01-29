@@ -8,6 +8,7 @@ import pytest
 from sdx_base.errors.errors import DataError
 from sdx_base.models.pubsub import Message
 
+from app.definitions.definitions import SurveyType
 from app.services.process_service import (
     ProcessService,
     SettingsProtocol,
@@ -95,8 +96,10 @@ def test_process_message_reads_file_and_delivers_seft(
     )
 
     # Assert the deliver_seft method was called with correct parameters
-    deliver_service.deliver_seft.assert_called_once_with(
+    deliver_service.deliver.assert_called_once_with(
+        SurveyType.SEFT,
         meta_dict,
+        meta_dict["filename"],
         b"file-bytes",
     )
 
@@ -124,7 +127,7 @@ def test_process_message_raises_error_when_filename_missing(
 
     # Ensure no calls were made to storage or deliver services
     storage_service.read.assert_not_called()
-    deliver_service.deliver_seft.assert_not_called()
+    deliver_service.deliver.assert_not_called()
 
 
 def test_quarantine_message_calls_pubsub_correctly(

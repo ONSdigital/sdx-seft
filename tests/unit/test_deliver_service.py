@@ -4,13 +4,15 @@ from unittest.mock import Mock
 
 import pytest
 
-from app.definitions import Metadata
+from app.config.deliver_config import deliver_config
+from app.definitions.definitions import Metadata, SurveyType
 from app.services.deliver_service import (
     DeliverService,
     FILE_NAME,
     TX_ID,
     CONTEXT,
-    SEFT_FILE_V2, SettingsProtocol, HttpProtocol,
+    SettingsProtocol,
+    HttpProtocol,
 )
 
 
@@ -31,7 +33,7 @@ def test_deliver_seft_posts_correct_payload(
         http_service: HttpProtocol):
 
     # Create a Deliver service instance
-    service = DeliverService(settings=settings, http_service=http_service)
+    service = DeliverService(settings=settings, http_service=http_service, deliver_config=deliver_config)
 
     # Set up a metadata dictionary
     meta_dict = Metadata(**{
@@ -55,7 +57,7 @@ def test_deliver_seft_posts_correct_payload(
     }
 
     # Call the deliver_seft method
-    service.deliver_seft(meta_dict, file_bytes)
+    service.deliver(SurveyType.SEFT, meta_dict, meta_dict["filename"], file_bytes)
 
     # Assert that the HTTP POST was called once
     http_service.post.assert_called_once()
@@ -73,4 +75,4 @@ def test_deliver_seft_posts_correct_payload(
     assert json.loads(params[CONTEXT]) == expected_context
 
     files = kwargs["files"]
-    assert files[SEFT_FILE_V2] == file_bytes
+    assert files[deliver_config[SurveyType.SEFT]["file_key"]] == file_bytes
