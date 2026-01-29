@@ -35,24 +35,31 @@ def test_deliver_seft_posts_correct_payload(
     # Create a Deliver service instance
     service = DeliverService(settings=settings, http_service=http_service, deliver_config=deliver_config)
 
+    ru_ref = "90826421137"
+    ru_check = "T"
+    period = "202112"
+    tx_id = "20220920110706"
+    survey_id = "266"
+    filename = f"{ru_ref}{ru_check}_{period}_{survey_id}_{tx_id}.xlsx.gpg"
+
     # Set up a metadata dictionary
     meta_dict = Metadata(**{
-        "filename": "test.seft",
-        "tx_id": "tx-123",
-        "survey_id": "001",
-        "period": "202401",
-        "ru_ref": "12345678901",
+        "filename": filename,
+        "tx_id": tx_id,
+        "survey_id": survey_id,
+        "period": period,
+        "ru_ref": ru_ref,
     })
 
     # Set up SEFT file bytes
     file_bytes = b"seft-file-content"
 
     expected_context = {
-        "survey_id": "001",
-        "period_id": "202401",
-        "ru_ref": "12345678901",
-        "tx_id": "tx-123",
-        "survey_type": "seft",
+        "survey_id": survey_id,
+        "period_id": period,
+        "ru_ref": ru_ref,
+        "tx_id": tx_id,
+        "survey_type": SurveyType.SEFT,
         "context_type": "business_survey",
     }
 
@@ -70,8 +77,8 @@ def test_deliver_seft_posts_correct_payload(
     assert endpoint == "deliver/v2/seft"
 
     params = kwargs["params"]
-    assert params[FILE_NAME] == "test.seft"
-    assert params[TX_ID] == "tx-123"
+    assert params[FILE_NAME] == filename
+    assert params[TX_ID] == tx_id
     assert json.loads(params[CONTEXT]) == expected_context
 
     files = kwargs["files"]
