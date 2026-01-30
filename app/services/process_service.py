@@ -3,9 +3,9 @@ from typing import Protocol, Optional
 
 from sdx_base.errors.errors import DataError
 from sdx_base.models.pubsub import Message, get_data
-from sdx_base.services.pubsub import PubsubService
 
 from app import get_logger
+from app.definitions.definitions import Metadata, SurveyType
 from app.services.deliver_service import DeliverService
 
 logger = get_logger()
@@ -47,14 +47,14 @@ class ProcessService:
         self._deliver_service = deliver_service
         self._pubsub_service = pubsub_service
 
-    def process_message(self, message: Message):
+    def process_message(self, message: Message) -> Metadata:
 
         # Decode the Pub/Sub message data
         data: str = get_data(message)
         logger.info(f"Seft triggered by PubSub message with data: {data}")
 
         # Check for filename in the message data
-        meta_dict = json.loads(data)
+        meta_dict: Metadata = json.loads(data)
         if "filename" not in meta_dict:
             raise DataError("Missing filename from data!")
 
@@ -63,9 +63,11 @@ class ProcessService:
         data_bytes = self._storage_service.read(filename, self._settings.get_bucket_name())
 
         # Deliver the SEFT file
-        self._deliver_service.deliver_seft(meta_dict, data_bytes)
+        self._deliver_service.deliver(SurveyType.SEFT, meta_dict, filename, data_bytes)
 
-        logger.info("Process completed successfully")
+        logger.info("SEFT file process completed successfully")
+
+        return meta_dict
 
     def quarantine_message(self, message: Message, reason: str):
 
