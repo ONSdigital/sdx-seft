@@ -1,40 +1,12 @@
-from typing import Protocol, Optional
-
-from sdx_base.errors.errors import DataError
-
 from app import get_logger
 from app.definitions.definitions import Metadata, SurveyType
 from app.functions.datetime_function import get_current_datetime_in_dm
-from app.functions.filename_function import get_ru_check_from_filename
 from app.functions.zip_function import create_zip
 from app.services.deliver_service import DeliverService
 
 logger = get_logger()
 
 NO_RECEIPT_SEFT = ["141", "200"]
-
-
-class ReadProtocol(Protocol):
-    def read(self,
-             filename: str,
-             bucket_name: str,
-             sub_dir: Optional[str] = None,
-             project_id: Optional[str] = None) -> bytes:
-        ...
-
-
-class SettingsProtocol(Protocol):
-    project_id: str
-    quarantine_topic_id: str
-
-    def get_bucket_name(self) -> str:
-        ...
-
-
-class PubsubProtocol(Protocol):
-
-    def quarantine_error(self, quarantine_topic_path: str, error: Exception, message: str, tx_id: str) -> str:
-        ...
 
 
 class ReceiptService:
@@ -59,17 +31,11 @@ class ReceiptService:
             logger.info(f"No receipt required for survey {meta_dict.get('survey_id')}. Skipping receipt generation.")
             return
 
-        seft_filename = meta_dict.get('filename')
-
-        ru_check = get_ru_check_from_filename(seft_filename)
-        if not ru_check:
-            raise DataError("Could not extract RU check from filename")
-
         receipt_filename = self._formulate_idbr_receipt_name(meta_dict['tx_id'])
         receipt_bytes = self._create_receipt_file(
             meta_dict['survey_id'],
             meta_dict['ru_ref'],
-            ru_check,
+            meta_dict['ru_check'],
             meta_dict['period']
         )
 

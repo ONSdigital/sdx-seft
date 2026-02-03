@@ -7,9 +7,8 @@ class Metadata(TypedDict):
     survey_id: str
     period: str
     ru_ref: str
+    ru_check: str
     filename: str
-    md5sum: NotRequired[str]
-    sizeBytes: NotRequired[int]
 
 
 class ParsedFilename(TypedDict):
