@@ -2,7 +2,13 @@ from typing import TypedDict
 
 from app.definitions.definitions import SurveyType
 
-deliver_config: TypedDict = {
+
+class DeliverConfigDetails(TypedDict):
+    endpoint: str
+    file_key: str
+
+
+deliver_config: dict[SurveyType, DeliverConfigDetails] = {
     SurveyType.SEFT: {
         "endpoint": "deliver/v2/seft",
         "file_key": "seft_file"
