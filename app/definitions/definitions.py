@@ -1,5 +1,5 @@
 from enum import StrEnum
-from typing import TypedDict, NotRequired
+from typing import TypedDict
 
 
 class Metadata(TypedDict):
@@ -9,13 +9,6 @@ class Metadata(TypedDict):
     ru_ref: str
     ru_check: str
     filename: str
-
-
-class ParsedFilename(TypedDict):
-    ru_ref: str
-    ru_check: str
-    period: str
-    survey_id: str
 
 
 class SurveyType(StrEnum):

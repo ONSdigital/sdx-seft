@@ -6,7 +6,7 @@ from sdx_base.models.pubsub import Message, Envelope
 
 
 @patch("app.services.process_service.get_data")
-def test_testing(mock_get_data, test_client):
+def test_testing(mock_get_data, test_client, storage_mock):
     payload = {
         "tx_id": "20220920110706",
         "filename": "90123456789T_202112_001_20220920110706.xlsx.gpg"
@@ -32,3 +32,7 @@ def test_testing(mock_get_data, test_client):
     )
 
     assert response.status_code == 204
+    storage_mock.read.assert_called_once_with(
+        "90123456789T_202112_001_20220920110706.xlsx.gpg",
+        'ons-sdx-sandbox-seft-responses'
+    )

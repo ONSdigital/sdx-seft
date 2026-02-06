@@ -39,7 +39,7 @@ class ReceiptService:
             meta_dict['period']
         )
 
-        zip_receipt_file = create_zip([{receipt_filename, receipt_bytes}])
+        zip_receipt_file = create_zip({receipt_filename: receipt_bytes})
         zip_receipt_filename = self._formulate_zip_receipt_name(meta_dict['tx_id'])
 
         # Deliver the zipped SEFT receipt file
