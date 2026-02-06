@@ -1,9 +1,10 @@
 import json
-from typing import Final, Protocol, TypedDict
+from typing import Final, Protocol
 
 import requests
 
 from app import get_logger
+from app.config.deliver_config import DeliverConfigDetails
 from app.definitions.definitions import Metadata, SurveyType
 
 logger = get_logger()
@@ -31,7 +32,10 @@ class SettingsProtocol(Protocol):
 
 class DeliverService:
 
-    def __init__(self, settings: SettingsProtocol, http_service: HttpProtocol, deliver_config: TypedDict):
+    def __init__(self,
+                 settings: SettingsProtocol,
+                 http_service: HttpProtocol,
+                 deliver_config: dict[SurveyType, DeliverConfigDetails]):
         self._settings = settings
         self._http_service = http_service
         self._deliver_config = deliver_config

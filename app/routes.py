@@ -1,7 +1,7 @@
 
 from fastapi import APIRouter, Depends
 from sdx_base.errors.errors import DataError
-from sdx_base.models.pubsub import Message, get_message, get_data
+from sdx_base.models.pubsub import Message, get_message
 from starlette.requests import Request
 from starlette.responses import Response
 
@@ -19,7 +19,6 @@ async def handle(
         process_service: ProcessService = Depends(get_process_service),
         receipt_service: ReceiptService = Depends(get_receipt_service),
 ) -> Response:
-
     # Fetch the Pub/Sub message
     message: Message = await get_message(request)
     meta_dict: Metadata = {}
@@ -28,7 +27,7 @@ async def handle(
         # Extract metadata from the message
         meta_dict = process_service.process_metadata(message)
         # Process the message and deliver the SEF file
-        process_service.process_seft(message)
+        process_service.process_seft(meta_dict)
     except DataError as e:
         process_service.quarantine_message(message, str(e))
         # Ack message (even in case of error, as it has been quarantined)
