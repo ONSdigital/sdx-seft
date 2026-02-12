@@ -8,6 +8,7 @@ import pytest
 from sdx_base.errors.errors import DataError
 from sdx_base.models.pubsub import Message
 
+from app.definitions.definitions import SurveyType
 from app.services.process_service import (
     ProcessService,
     SettingsProtocol,
@@ -59,7 +60,38 @@ def pubsub_service() -> PubsubProtocol:
     return cast(PubsubProtocol, Mock(spec=PubsubProtocol))
 
 
-def test_process_message_reads_file_and_delivers_seft(
+def test_process_metadata_returns_correct_metadata(
+    settings: SettingsProtocol,
+    storage_service: ReadProtocol,
+    deliver_service: DeliverService,
+    pubsub_service: PubsubProtocol
+):
+    # Create ProcessService instance
+    process_service = ProcessService(
+        settings=settings,
+        storage_service=storage_service,
+        deliver_service=deliver_service,
+        pubsub_service=pubsub_service,
+    )
+
+    # Set up a valid Pub/Sub message
+    message = make_pubsub_message({"filename": "90123456789T_202112_001_20220920110706.xlsx.gpg"})
+
+    # Call the process_metadata method
+    meta_dict = process_service.process_metadata(message)
+
+    # Assert the returned metadata dictionary is correct
+    assert meta_dict == {
+        "filename": "90123456789T_202112_001_20220920110706.xlsx.gpg",
+        "tx_id": "20220920110706",
+        "survey_id": "001",
+        "period": "202112",
+        "ru_ref": "90123456789",
+        "ru_check": "T",
+    }
+
+
+def test_process_seft_reads_file_and_delivers_seft(
     settings: SettingsProtocol,
     storage_service: ReadProtocol,
     deliver_service: DeliverService,
@@ -80,13 +112,11 @@ def test_process_message_reads_file_and_delivers_seft(
         "survey_id": "001",
         "period": "202401",
         "ru_ref": "12345678901",
+        "ru_check": "A",
     }
 
-    # Cast mock to Message type to stop pycharm complaining
-    message = make_pubsub_message(meta_dict)
-
     # call the process_message method
-    process_service.process_message(message)
+    process_service.process_seft(meta_dict)
 
     # Assert the storage protocol read method was called with correct parameters
     storage_service.read.assert_called_once_with(
@@ -95,13 +125,15 @@ def test_process_message_reads_file_and_delivers_seft(
     )
 
     # Assert the deliver_seft method was called with correct parameters
-    deliver_service.deliver_seft.assert_called_once_with(
+    deliver_service.deliver.assert_called_once_with(
+        SurveyType.SEFT,
         meta_dict,
+        meta_dict["filename"],
         b"file-bytes",
     )
 
 
-def test_process_message_raises_error_when_filename_missing(
+def test_process_metadata_raises_error_when_filename_missing(
     settings: SettingsProtocol,
     storage_service: ReadProtocol,
     deliver_service: DeliverService,
@@ -120,11 +152,30 @@ def test_process_message_raises_error_when_filename_missing(
 
     # Assert that DataError is raised
     with pytest.raises(DataError):
-        process_service.process_message(message)
+        process_service.process_metadata(message)
 
-    # Ensure no calls were made to storage or deliver services
-    storage_service.read.assert_not_called()
-    deliver_service.deliver_seft.assert_not_called()
+
+def test_process_metadata_raises_error_on_invalid_filename(
+    settings: SettingsProtocol,
+    storage_service: ReadProtocol,
+    deliver_service: DeliverService,
+    pubsub_service: PubsubProtocol,
+):
+    # Create ProcessService instance
+    process_service = ProcessService(
+        settings=settings,
+        storage_service=storage_service,
+        deliver_service=deliver_service,
+        pubsub_service=pubsub_service,
+    )
+    process_service.quarantine_message = Mock()
+
+    # Set up an invalid Pub/Sub message
+    message = make_pubsub_message({"tx_id": "tx-123", "filename": "invalid_filename.xlsx.gpg"})
+
+    # Assert that DataError is raised
+    with pytest.raises(DataError):
+        process_service.process_metadata(message)
 
 
 def test_quarantine_message_calls_pubsub_correctly(
