@@ -5,7 +5,7 @@ import requests
 
 from app import get_logger
 from app.config.deliver_config import DeliverConfigDetails
-from app.definitions.definitions import Metadata, SurveyType
+from app.definitions.definitions import Metadata, SurveyType, Context
 
 logger = get_logger()
 
@@ -52,7 +52,7 @@ class DeliverService:
 
         endpoint = self._deliver_config[survey_type]['endpoint']
         file_key = self._deliver_config[survey_type]['file_key']
-        context = {
+        context: Context = {
             "survey_id": meta_dict["survey_id"],
             "period_id": meta_dict["period"],
             "ru_ref": meta_dict["ru_ref"],

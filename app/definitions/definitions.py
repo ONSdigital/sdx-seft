@@ -14,3 +14,12 @@ class Metadata(TypedDict):
 class SurveyType(StrEnum):
     SEFT = "seft"
     SEFT_RECEIPT = "seft_receipt"
+
+
+class Context(TypedDict):
+    survey_id: str
+    period_id: str
+    ru_ref: str
+    tx_id: str
+    survey_type: SurveyType
+    context_type: str

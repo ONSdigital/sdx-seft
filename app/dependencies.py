@@ -4,6 +4,7 @@ from sdx_base.services.storage import StorageService
 from sdx_base.services.pubsub import PubsubService
 
 from app.config.deliver_config import deliver_config
+from app.services.datetime_service import DatetimeService
 from app.services.deliver_service import DeliverService
 from app.services.process_service import ProcessService
 from app.services.receipt_service import ReceiptService
@@ -33,6 +34,10 @@ def get_pubsub_service() -> PubsubService:
     return PubsubService()
 
 
+def get_datetime_service() -> DatetimeService:
+    return DatetimeService()
+
+
 def get_process_service(
         settings: Settings = Depends(get_settings),
         storage: StorageService = Depends(get_storage_service),
@@ -44,5 +49,6 @@ def get_process_service(
 
 def get_receipt_service(
     deliver: DeliverService = Depends(get_deliver_service),
+    datetime: DatetimeService = Depends(get_datetime_service)
 ) -> ReceiptService:
-    return ReceiptService(deliver)
+    return ReceiptService(deliver, datetime)

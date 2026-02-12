@@ -1,7 +1,7 @@
 from app import get_logger
 from app.definitions.definitions import Metadata, SurveyType
-from app.functions.datetime_function import get_current_datetime_in_dm
 from app.functions.zip_function import create_zip
+from app.services.datetime_service import DatetimeService
 from app.services.deliver_service import DeliverService
 
 logger = get_logger()
@@ -13,8 +13,10 @@ class ReceiptService:
 
     def __init__(self,
                  deliver_service: DeliverService,
+                 datetime_service: DatetimeService
                  ):
         self._deliver_service = deliver_service
+        self._datetime_service = datetime_service
 
     def process_receipt(self, meta_dict: Metadata):
         """
@@ -54,7 +56,7 @@ class ReceiptService:
         return tx_id
 
     def _formulate_idbr_receipt_name(self, tx_id: str) -> str:
-        dm = get_current_datetime_in_dm()
+        dm = self._datetime_service.get_current_datetime_in_dm()
         return "REC{0}_{1}.DAT".format(dm, tx_id)
 
     def _format_idbr_receipt(self, survey_id: str, ru_ref: str, ru_check: str, period: str):

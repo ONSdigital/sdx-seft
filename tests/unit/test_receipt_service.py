@@ -18,12 +18,14 @@ def deliver_service() -> DeliverService:
 def test_process_receipt(
     mock_create_zip: Mock,
     deliver_service: DeliverService,
+    datetime_mock
 ):
     mock_create_zip.return_value = b'zipped-bytes'
 
     # Arrange
     receipt_service = ReceiptService(
         deliver_service=deliver_service,
+        datetime_service=datetime_mock
     )
 
     meta_dict = {
@@ -45,12 +47,15 @@ def test_process_receipt(
         b'zipped-bytes',
     )
 
+
 def test_process_receipt_no_receipt_needed(
     deliver_service: DeliverService,
+    datetime_mock
 ):
     # Arrange
     receipt_service = ReceiptService(
         deliver_service=deliver_service,
+        datetime_service=datetime_mock
     )
 
     meta_dict = {
@@ -70,10 +75,12 @@ def test_process_receipt_no_receipt_needed(
 
 def test_receipt_service_formulate_idbr_receipt(
     deliver_service: DeliverService,
+    datetime_mock
 ):
     # Arrange
     receipt_service = ReceiptService(
         deliver_service=deliver_service,
+        datetime_service=datetime_mock
     )
 
     survey_id = "123"
@@ -95,17 +102,15 @@ def test_receipt_service_formulate_idbr_receipt(
     assert receipt_content == expected_receipt_content
 
 
-@patch("app.services.receipt_service.get_current_datetime_in_dm")
 def test_receipt_service_formulate_idbr_receipt_name(
-    mock_datetime: Mock,
     deliver_service: DeliverService,
+    datetime_mock
 ):
     # Arrange
     receipt_service = ReceiptService(
         deliver_service=deliver_service,
+        datetime_service=datetime_mock
     )
-
-    mock_datetime.return_value = "0204"
 
     tx_id = "123456"
 
@@ -113,4 +118,4 @@ def test_receipt_service_formulate_idbr_receipt_name(
     receipt_filename = receipt_service._formulate_idbr_receipt_name(tx_id)
 
     # Assert
-    assert receipt_filename == f"REC0204_{tx_id}.DAT"
+    assert receipt_filename == f"REC2004_{tx_id}.DAT"

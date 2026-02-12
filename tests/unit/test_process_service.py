@@ -90,6 +90,7 @@ def test_process_metadata_returns_correct_metadata(
         "ru_check": "T",
     }
 
+
 def test_process_seft_reads_file_and_delivers_seft(
     settings: SettingsProtocol,
     storage_service: ReadProtocol,

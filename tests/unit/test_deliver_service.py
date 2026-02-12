@@ -85,6 +85,7 @@ def test_deliver_seft_posts_correct_payload(
     files = kwargs["files"]
     assert files[deliver_config[SurveyType.SEFT]["file_key"]] == file_bytes
 
+
 def test_deliver_seft_receipt_posts_correct_payload(
     settings: SettingsProtocol,
     http_service: HttpProtocol):
