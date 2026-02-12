@@ -11,13 +11,15 @@ def parse_metadata_from_filename(filename: str) -> Metadata | None:
 
     Returns:
         Metadata|None: The metadata if found, otherwise None.
+
+    Example:
+        Input: Filename 90826421137T_202112_266_20220920110706.xlsx.gpg
+        Output: ru_ref: 90826421137
+                ru_check: T
+                period: 202112
+                survey_id: 266
+                tx_id: 20220920110706
     """
-    # Filename 90826421137T_202112_266_20220920110706.xlsx.gpg
-    # ru_ref: 90826421137
-    # ru_check: T
-    # period: 202112
-    # survey_id: 266
-    # tx_id: 20220920110706
     pattern = r'^([0-9]{11})([A-Z0-9]{1})_([0-9]{6})_([0-9]{3})_([0-9]{14}).xlsx.*'
     match = re.match(pattern, filename)
     if not match:
