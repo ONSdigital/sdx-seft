@@ -10,7 +10,7 @@ from app.functions.zip_function import create_zip
 MOCK_RECEIPT_DATE = datetime.datetime(2023, 4, 20, 12, 0, 0, 0)
 
 
-class TestDataSetup:
+class TestDataContainer:
     tx_id: str
     ru_ref: str
     ru_check: str
@@ -56,10 +56,10 @@ class TestDataSetup:
             json.dumps(self.payload).encode("utf-8")
         )
 
-        self.object_id = {"objectId": self.tx_id}
+        self.attributes = {"tx_id": self.tx_id}
 
         self.message: Message = {
-            "attributes": self.object_id,
+            "attributes": self.attributes,
             "data": self.encrypted_payload.decode("utf-8"),
             "message_id": "test-id",
             "publish_time": MOCK_RECEIPT_DATE.strftime("%Y-%m-%dT%H:%M:%S.000Z")

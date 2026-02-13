@@ -12,12 +12,12 @@ from sdx_base.services.storage import StorageService
 from sdx_base.services.http import HttpService
 from sdx_base.services.pubsub import PubsubService
 from sdx_base.server.server import RouterConfig
-from sdx_base.server.tx_id import txid_from_pubsub
 
 from app.dependencies import get_storage_service, get_pubsub_service, get_http_service, get_settings, \
     get_datetime_service
 from app.routes import router
 from app.services.datetime_service import DatetimeService
+from app.services.process_service import get_tx_id
 from tests.test_data.integration_test_data import MOCK_RECEIPT_DATE
 from tests.test_data.mock_settings import MockSettings, mock_get_instance
 
@@ -82,7 +82,7 @@ def test_client():
     os.environ["PROJECT_ID"] = "ons-sdx-sandbox"
     proj_root = Path(__file__).parent  # sdx-seft dir
     router_config = RouterConfig(
-        router, tx_id_getter=txid_from_pubsub
+        router, tx_id_getter=get_tx_id
     )
     app: FastAPI = run(
         MockSettings,
