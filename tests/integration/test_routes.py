@@ -5,7 +5,7 @@ from sdx_base.errors.errors import DataError
 from app.config.deliver_config import deliver_config
 from app.definitions.definitions import SurveyType
 from app.services.deliver_service import FILE_NAME, CONTEXT, TX_ID
-from tests.test_data.integration_test_data import TestDataSetup
+from tests.test_data.integration_test_data import TestDataContainer
 
 from tests.test_data.mock_settings import MOCK_BUCKET_NAME, MOCK_DELIVER_SERVICE_URL
 
@@ -29,7 +29,7 @@ def test_seft_and_receipt_deliver_success(test_client, storage_mock, http_mock):
     survey_id = "001"
 
     # Setup test data
-    test_data = TestDataSetup(tx_id, ru_ref, ru_check, period, survey_id)
+    test_data = TestDataContainer(tx_id, ru_ref, ru_check, period, survey_id)
 
     # Call endpoint with test data envelope
     response = test_client.post(
@@ -94,7 +94,7 @@ def test_seft_deliver_success_when_receipt_not_required(test_client, storage_moc
     # Survey ID that does not require a receipt
     survey_id = "141"
 
-    test_data = TestDataSetup(tx_id, ru_ref, ru_check, period, survey_id)
+    test_data = TestDataContainer(tx_id, ru_ref, ru_check, period, survey_id)
 
     response = test_client.post(
         "/",
@@ -141,7 +141,7 @@ def test_send_quarantine_message_when_metadata_incomplete(test_client, storage_m
     # Invalid ru_ref to trigger metadata processing failure
     ru_ref = "1234"
 
-    test_data = TestDataSetup(tx_id, ru_ref, ru_check, period, survey_id)
+    test_data = TestDataContainer(tx_id, ru_ref, ru_check, period, survey_id)
 
     response = test_client.post(
         "/",
@@ -174,7 +174,7 @@ def test_send_quarantine_message_when_seft_file_read_fails(test_client, storage_
     period = "202112"
     survey_id = "001"
 
-    test_data = TestDataSetup(tx_id, ru_ref, ru_check, period, survey_id)
+    test_data = TestDataContainer(tx_id, ru_ref, ru_check, period, survey_id)
 
     storage_mock.read.side_effect = DataError("Failed to read SEFT file")
 
