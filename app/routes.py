@@ -33,7 +33,7 @@ async def handle(
 
     logger.info(f"Received data: {data}")
 
-    file_name = data["name"]
+    file_name = data["message"]["attributes"]["objectId"]
 
     # Work out other metadata from file_name
     metadata: Metadata | None = parse_metadata_from_filename(file_name)
