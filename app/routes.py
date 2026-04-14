@@ -25,17 +25,10 @@ async def handle(
         process_service: ProcessService = Depends(get_process_service),
         receipt_service: ReceiptService = Depends(get_receipt_service),
 ) -> Response:
-
-    # TODO no idea if this will work
-
-    # Fetch the content
     data = await request.json()
-
     logger.info(f"Received data: {data}")
 
     file_name = data["message"]["attributes"]["objectId"]
-
-    # Work out other metadata from file_name
     metadata: Metadata | None = parse_metadata_from_filename(file_name)
 
     if not metadata:
@@ -45,8 +38,6 @@ async def handle(
         logger.info(f"Received metadata: {metadata}")
         process_service.process_seft(metadata)
     except DataError as e:
-
-        # TODO fix this
         process_service.quarantine_seft(metadata["tx_id"], str(e))
         # Ack message (even in case of error, as it has been quarantined)
         return Response(status_code=204)
