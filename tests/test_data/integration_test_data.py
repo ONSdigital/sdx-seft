@@ -29,31 +29,9 @@ class TestDataContainer:
         self.receipt_bytes = bytes(f"{self.ru_ref}:{self.ru_check}:{self.survey_id}:{self.period}", "utf-8")
         self.receipt_zip_bytes = create_zip({self.receipt_filename: self.receipt_bytes})
 
-        self.seft_context: Context = {
-            "survey_id": self.survey_id,
-            "period_id": self.period,
-            "ru_ref": self.ru_ref,
-            "tx_id": self.tx_id,
-            "survey_type": SurveyType.SEFT.value,
-            "context_type": "business_survey"
-        }
-
-        self.receipt_context: Context = {
-            "survey_id": self.survey_id,
-            "period_id": self.period,
-            "ru_ref": self.ru_ref,
-            "tx_id": self.tx_id,
-            "survey_type": SurveyType.SEFT_RECEIPT.value,
-            "context_type": "business_survey"
-        }
-
-        self.payload = {
-            "tx_id": self.tx_id,
-            "filename": self.seft_filename
-        }
-
+        # We dont really care about the payload
         self.encrypted_payload = base64.b64encode(
-            json.dumps(self.payload).encode("utf-8")
+            "hello, world".encode("utf-8")
         )
 
         self.attributes = {"tx_id": self.tx_id}
@@ -65,4 +43,4 @@ class TestDataContainer:
             "publish_time": MOCK_RECEIPT_DATE.strftime("%Y-%m-%dT%H:%M:%S.000Z")
         }
 
-        self.envelope: Envelope = { "message": self.message, "subscription": "test-subscription" }
+        self.envelope: Envelope = {"message": self.message, "subscription": "test-subscription" }

@@ -71,7 +71,16 @@ class ProcessService:
         return meta_dict
 
     def process_seft(self, meta_dict: Metadata):
+        """
+        Process a SEFT file
+
+        :param meta_dict: The metadata of the SEFT file to process
+        """
+
+        # Extract the filename
         filename = meta_dict['filename']
+
+        # Read the contents of the SEFT from the bucket
         data_bytes = self._storage_service.read(filename, self._settings.get_bucket_name())
 
         # Deliver the SEFT file

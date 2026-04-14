@@ -1,6 +1,6 @@
 from fastapi import APIRouter, Depends
-from sdx_base.errors.errors import DataError
-from sdx_base.models.pubsub import Message, get_message, get_data
+from sdx_base.errors.errors import DataError, UnrecoverableError
+from sdx_base.models.pubsub import Message, get_message
 from starlette.requests import Request
 from starlette.responses import Response
 
@@ -23,17 +23,27 @@ async def handle(
     receipt_service: ReceiptService = Depends(get_receipt_service),
 ) -> Response:
 
-    # Extract the filename from the request and generate metadata
+    # Extract the filename from the request
     message: Message = await get_message(request)
     file_name = message["attributes"]["objectId"]
-    metadata: Metadata = parse_metadata_from_filename(file_name)
+    logger.info(f"Processing file_name: {file_name}")
 
-    logger.info(f"Received metadata: {metadata}")
+    # Extract metadata from the filename
+    try:
+        metadata: Metadata = parse_metadata_from_filename(file_name)
+    except DataError:
+        logger.exception(f"Could not extract metadata from filename {file_name}")
+
+        # If an error occurs extracting metadata, we cannot quarantine, as we don't have a tx_id
+        return Response(status_code=400)
+
+    logger.info(f"Processing metadata: {metadata}")
 
     # Process the seft
     try:
         process_service.process_seft(metadata)
-    except DataError as e:
+    except UnrecoverableError as e:
+        logger.exception("Error processing SEFT, quarantining...")
         process_service.quarantine_seft(metadata["tx_id"], str(e))
         # Ack message (even in case of error, as it has been quarantined)
         return Response(status_code=204)
