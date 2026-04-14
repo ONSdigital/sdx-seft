@@ -96,6 +96,16 @@ class ProcessService:
         )
         logger.info("Quarantine completed successfully")
 
+    def quarantine_seft(self, tx_id: str, reason: str):
+        self._pubsub_service.quarantine_error(
+            f"projects/{self._settings.project_id}/topics/{self._settings.quarantine_topic_id}",
+            DataError,
+            reason,
+            tx_id
+        )
+        logger.info("Quarantine completed successfully")
+
+
 
 async def get_tx_id(req: Request) -> str:
     logger.info(f"Extracting tx_id from {req}")

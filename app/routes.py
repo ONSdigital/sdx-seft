@@ -50,11 +50,10 @@ async def handle(
     except DataError as e:
 
         # TODO fix this
-        process_service.quarantine_message(message, str(e))
+        process_service.quarantine_seft(metadata["tx_id"], str(e))
         # Ack message (even in case of error, as it has been quarantined)
         return Response(status_code=204)
 
-    # Process the receipt for SEFT file
     receipt_service.process_receipt(metadata)
 
     # Ack message
