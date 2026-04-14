@@ -34,6 +34,7 @@ async def handle(
     # Extract data from request
 
     data: dict = json.loads(content)
+    logger.info(f"Received data: {data}")
 
     file_name = data["name"]
 
