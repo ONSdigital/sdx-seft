@@ -5,7 +5,6 @@ from sdx_base.server.server import RouterConfig
 from sdx_base.server.tx_id import txid_not_applicable
 
 from app.routes import router
-from app.services.process_service import get_tx_id
 from app.settings import Settings
 
 if __name__ == '__main__':
