@@ -1,16 +1,21 @@
 import re
 
+from sdx_base.errors.errors import DataError
+
 from app.definitions.definitions import Metadata
 
 
-def parse_metadata_from_filename(filename: str) -> Metadata | None:
+def parse_metadata_from_filename(filename: str) -> Metadata:
     """Extract the metadata from an incoming SEFT filename.
 
     Args:
         filename (str): The filename to extract from.
 
     Returns:
-        Metadata|None: The metadata if found, otherwise None.
+        Metadata: A dictionary containing the extracted metadata.
+
+    Raises:
+        DataError: If the filename is invalid.
 
     Example:
         Input: Filename 90826421137T_202112_266_20220920110706.xlsx.gpg
@@ -23,7 +28,7 @@ def parse_metadata_from_filename(filename: str) -> Metadata | None:
     pattern = r'^([0-9]{11})([A-Z0-9]{1})_([0-9]{6})_([0-9]{3})_([0-9]{14}).xlsx.*'
     match = re.match(pattern, filename)
     if not match:
-        return None
+        raise DataError("Failed to parse metadata from filename!")
 
     meta_dict: Metadata = {
         "ru_ref": match.group(1),
