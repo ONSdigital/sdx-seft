@@ -33,8 +33,7 @@ async def handle(
 
     # Extract data from request
 
-    data: str = base64.b64decode(content).decode("utf-8").strip()
-    data: dict = json.loads(data)
+    data: dict = json.loads(content)
 
     file_name = data["name"]
 
