@@ -35,7 +35,7 @@ def parse_metadata_from_filename(filename: str) -> Metadata:
         "ru_check": match.group(2),
         "period": match.group(3),
         "survey_id": match.group(4),
-        "tx_id": match.group(5),
+        "tx_id": filename.split(".")[0],
         "filename": filename
     }
 
