@@ -4,7 +4,7 @@ version = "2.3.10"
 description = "SDX-Seft service is responsible for SEFT submissions that are received from RAS-RM."
 requires-python = "==3.13.*"
 dependencies = [
-    "sdx-base==0.2.8",
+    "sdx-base==0.2.9",
 ]
 
 [dependency-groups]

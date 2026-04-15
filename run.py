@@ -7,7 +7,8 @@ from fastapi import Request
 from sdx_base.models.pubsub import Message, get_message
 
 from app.routes import router
-from app.settings import Settings
+from app.settings import Settings, ROOT
+
 
 async def txid_from_filename(request: Request) -> str:
     message: Message = await get_message(request)
@@ -20,6 +21,5 @@ async def txid_from_filename(request: Request) -> str:
     return tx_id
 
 if __name__ == '__main__':
-    proj_root = Path(__file__).parent  # sdx-seft dir
     router_config = RouterConfig(router, tx_id_getter=txid_from_filename)
-    run(Settings, routers=[router_config], proj_root=proj_root)
+    run(Settings, routers=[router_config], proj_root=ROOT)

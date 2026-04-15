@@ -114,14 +114,3 @@ class ProcessService:
         )
         logger.info("Quarantine completed successfully")
 
-
-
-async def get_tx_id(req: Request) -> str:
-    logger.info(f"Extracting tx_id from {req}")
-    message: Message = await get_message(req)
-    tx_id = message["attributes"].get("tx_id")
-    if not tx_id:
-        data = get_data(message)
-        meta_dict = json.loads(data)
-        tx_id = meta_dict.get("tx_id")
-    return tx_id
