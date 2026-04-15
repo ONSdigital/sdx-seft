@@ -4,9 +4,11 @@ import json
 
 from sdx_base.errors.errors import DataError
 from sdx_base.models.pubsub import Message, Envelope
+from starlette.testclient import TestClient
 
 from app.config.deliver_config import deliver_config
-from app.definitions.definitions import SurveyType
+from app.definitions.definitions import SurveyType, Context
+from app.functions.zip_function import create_zip
 from app.services.deliver_service import FILE_NAME, CONTEXT, TX_ID
 from tests.test_data.integration_test_data import TestDataContainer
 
@@ -15,7 +17,7 @@ from tests.test_data.mock_settings import MOCK_BUCKET_NAME, MOCK_DELIVER_SERVICE
 MOCK_RECEIPT_DATE = datetime.datetime(2023, 4, 20, 12, 0, 0, 0)
 
 
-def test_seft_and_receipt_deliver_success(test_client, storage_mock, http_mock):
+def test_seft_and_receipt_deliver_success(test_client: TestClient, storage_mock, http_mock):
     """
     Test the successful delivery of both SEFT file and receipt when receipt is required.
 
@@ -27,21 +29,32 @@ def test_seft_and_receipt_deliver_success(test_client, storage_mock, http_mock):
     5. Assert that the SEFT file was delivered to sdx-deliver with the correct parameters and file bytes.
     6. Assert that the SEFT receipt was delivered to sdx-deliver with the correct parameters and receipt bytes.
     """
-    tx_id = "20220920110706"
+
+    # TODO, this test needs refectoring
+    
+    # ------------------------
+    # Setup test data
+    # ------------------------
+
+    timestamp = "20220920110706"
     ru_ref = "90123456789"
     ru_check = "T"
     period = "202112"
     survey_id = "001"
 
-    # Setup test data
-
+    tx_id = f"{ru_ref}{ru_check}_{period}_{survey_id}_{timestamp}"
+    file_name = f"{tx_id}.xlsx.gpg"
     data = base64.b64encode(
         "hello, world".encode("utf-8")
     ).decode("utf-8")
 
+    # ------------------------
+    # Setup Envelope
+    # ------------------------
+
     message: Message = {
         "attributes": {
-            "objectId": f"{ru_ref}{ru_check}_{period}_{survey_id}_{tx_id}.xlsx.gpg",
+            "objectId": file_name,
         },
         "data": data,
         "message_id": "test-id",
@@ -50,48 +63,78 @@ def test_seft_and_receipt_deliver_success(test_client, storage_mock, http_mock):
 
     envelope: Envelope = {"message": message, "subscription": "test-subscription"}
 
+    # ------------------------
+    # Call the endpoint
+    # ------------------------
+
     # Call endpoint with test data envelope
     response = test_client.post(
         "/",
         json=envelope
     )
 
+    # ------------------------
+    # Assertions
+    # ------------------------
+
     # Assert status code
     assert response.status_code == 204
 
-    # # Assert SEFT file read from storage
-    # storage_mock.read.assert_called_once_with(
-    #     test_data.seft_filename,
-    #     MOCK_BUCKET_NAME,
-    # )
-    #
-    # # Assert SEFT file delivery
-    # http_mock.post.assert_any_call(
-    #     MOCK_DELIVER_SERVICE_URL,
-    #     deliver_config[SurveyType.SEFT]['endpoint'],
-    #     params={
-    #         FILE_NAME: test_data.seft_filename,
-    #         TX_ID: tx_id,
-    #         CONTEXT: json.dumps(test_data.seft_context),
-    #     },
-    #     files={
-    #         deliver_config[SurveyType.SEFT]['file_key']: storage_mock.read.return_value
-    #     }
-    # )
-    #
-    # # Assert SEFT receipt delivery
-    # http_mock.post.assert_called_with(
-    #     MOCK_DELIVER_SERVICE_URL,
-    #     deliver_config[SurveyType.SEFT_RECEIPT]['endpoint'],
-    #     params={
-    #         FILE_NAME: tx_id,
-    #         TX_ID: tx_id,
-    #         CONTEXT: json.dumps(test_data.receipt_context),
-    #     },
-    #     files={
-    #         deliver_config[SurveyType.SEFT_RECEIPT]['file_key']: test_data.receipt_zip_bytes
-    #     }
-    # )
+    # Assert SEFT file read from storage
+    storage_mock.read.assert_called_once_with(
+        file_name,
+        MOCK_BUCKET_NAME,
+    )
+
+    expected_context: Context = {
+            "survey_id": survey_id,
+            "period_id": period,
+            "ru_ref": ru_ref,
+            "tx_id": tx_id,
+            "survey_type": SurveyType.SEFT,
+            "context_type": "business_survey"
+    }
+
+    # Assert deliver was called with correct parameters for SEFT file
+    http_mock.post.assert_any_call(
+        MOCK_DELIVER_SERVICE_URL,
+        deliver_config[SurveyType.SEFT]['endpoint'],
+        params={
+            FILE_NAME: file_name,
+            TX_ID: tx_id,
+            CONTEXT: json.dumps(expected_context),
+        },
+        files={
+            deliver_config[SurveyType.SEFT]['file_key']: storage_mock.read.return_value
+        }
+    )
+
+    receipt_context: Context = {
+        "survey_id": survey_id,
+        "period_id": period,
+        "ru_ref": ru_ref,
+        "tx_id": tx_id,
+        "survey_type": SurveyType.SEFT_RECEIPT,
+        "context_type": "business_survey"
+    }
+
+    receipt_filename = f"REC{MOCK_RECEIPT_DATE.strftime("%d%m")}_{tx_id}.DAT"
+    receipt_bytes = bytes(f"{ru_ref}:{ru_check}:{survey_id}:{period}", "utf-8")
+    receipt_zip_bytes = create_zip({receipt_filename: receipt_bytes})
+
+    # Assert SEFT receipt delivery
+    http_mock.post.assert_called_with(
+        MOCK_DELIVER_SERVICE_URL,
+        deliver_config[SurveyType.SEFT_RECEIPT]['endpoint'],
+        params={
+            FILE_NAME: f"{tx_id}_receipt.zip",
+            TX_ID: tx_id,
+            CONTEXT: json.dumps(receipt_context),
+        },
+        files={
+            deliver_config[SurveyType.SEFT_RECEIPT]['file_key']: receipt_zip_bytes
+        }
+    )
 
 
 def test_seft_deliver_success_when_receipt_not_required(test_client, storage_mock, http_mock):
