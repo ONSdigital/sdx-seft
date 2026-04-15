@@ -1,3 +1,4 @@
+import datetime
 import os
 from unittest.mock import Mock
 
@@ -6,7 +7,6 @@ import pytest
 from fastapi import FastAPI
 from fastapi.testclient import TestClient
 
-from sdx_base.run import run
 from sdx_base.server.tx_id import txid_not_applicable
 from sdx_base.services.storage import StorageService
 from sdx_base.services.http import HttpService
@@ -19,8 +19,9 @@ from app.dependencies import get_storage_service, get_pubsub_service, get_http_s
 from app.routes import router
 from app.services.datetime_service import DatetimeService
 from app.settings import ROOT
-from tests.test_data.integration_test_data import MOCK_RECEIPT_DATE
 from tests.test_data.mock_settings import MockSettings, mock_get_instance
+
+MOCK_RECEIPT_DATE = datetime.datetime(2023, 4, 20, 12, 0, 0, 0)
 
 
 @pytest.fixture(autouse=True)

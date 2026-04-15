@@ -31,7 +31,7 @@ def test_seft_and_receipt_deliver_success(test_client: TestClient, storage_mock,
     """
 
     # TODO, this test needs refectoring
-    
+
     # ------------------------
     # Setup test data
     # ------------------------
@@ -137,7 +137,7 @@ def test_seft_and_receipt_deliver_success(test_client: TestClient, storage_mock,
     )
 
 
-def test_seft_deliver_success_when_receipt_not_required(test_client, storage_mock, http_mock):
+def test_seft_deliver_success_when_receipt_not_required(test_client: TestClient, storage_mock, http_mock):
     """
     Test the successful delivery of SEFT file when receipt is not required.
 
@@ -148,34 +148,70 @@ def test_seft_deliver_success_when_receipt_not_required(test_client, storage_moc
     4. Assert that the SEFT file was read from storage with the correct filename and bucket.
     5. Assert that the HTTP Post was called only once with the correct parameters and file bytes of SEFT.
     """
-    tx_id = "20220920110706"
+
+    # TODO, this test needs refectoring
+
+    # ------------------------
+    # Setup test data
+    # ------------------------
+
+    timestamp = "20220920110706"
     ru_ref = "90123456789"
     ru_check = "T"
     period = "202112"
+    survey_id = "141"  # Survey ID that does not require a receipt
 
-    # Survey ID that does not require a receipt
-    survey_id = "141"
+    tx_id = f"{ru_ref}{ru_check}_{period}_{survey_id}_{timestamp}"
+    file_name = f"{tx_id}.xlsx.gpg"
+    data = base64.b64encode(
+        "hello, world".encode("utf-8")
+    ).decode("utf-8")
 
-    test_data = TestDataContainer(tx_id, ru_ref, ru_check, period, survey_id)
+    # ------------------------
+    # Setup Envelope
+    # ------------------------
+
+    message: Message = {
+        "attributes": {
+            "objectId": file_name,
+        },
+        "data": data,
+        "message_id": "test-id",
+        "publish_time": MOCK_RECEIPT_DATE.strftime("%Y-%m-%dT%H:%M:%S.000Z")
+    }
+
+    envelope: Envelope = {"message": message, "subscription": "test-subscription"}
 
     response = test_client.post(
         "/",
-        json=test_data.envelope
+        json=envelope
     )
 
     assert response.status_code == 204
+
+    # Ensure the seft was read from storage
     storage_mock.read.assert_called_once_with(
-        test_data.seft_filename,
+        file_name,
         MOCK_BUCKET_NAME,
     )
 
+    expected_context: Context = {
+        "survey_id": survey_id,
+        "period_id": period,
+        "ru_ref": ru_ref,
+        "tx_id": tx_id,
+        "survey_type": SurveyType.SEFT,
+        "context_type": "business_survey"
+    }
+
+    # Assert the http service was only called ONCE (no receipt sent)
     http_mock.post.assert_called_once_with(
         MOCK_DELIVER_SERVICE_URL,
         deliver_config[SurveyType.SEFT]['endpoint'],
         params={
-            FILE_NAME: test_data.seft_filename,
+            FILE_NAME: file_name,
             TX_ID: tx_id,
-            CONTEXT: json.dumps(test_data.seft_context),
+            CONTEXT: json.dumps(expected_context),
         },
         files={
             deliver_config[SurveyType.SEFT]['file_key']: storage_mock.read.return_value
@@ -183,38 +219,73 @@ def test_seft_deliver_success_when_receipt_not_required(test_client, storage_moc
     )
 
 
-def test_send_quarantine_message_when_metadata_incomplete(test_client, storage_mock, http_mock, pubsub_mock):
+def test_send_quarantine_message_when_metadata_incomplete(test_client: TestClient, storage_mock, http_mock, pubsub_mock):
     """
     Test that a quarantine message is sent when the metadata is incomplete and cannot be processed.
 
     Test procedures:
     1. Setup test data with an invalid `ru_ref` to trigger metadata processing failure.
     2. Call the endpoint with the test data envelope.
-    3. Assert that the response status code is 204.
+    3. Assert that the response status code is 400
     4. Assert that the SEFT file read from storage was not called.
     5. Assert that the HTTP Post was not called.
-    6. Assert that a quarantine message was sent to Pub/Sub.
     """
-    tx_id = "20220920110706"
+
+    # TODO this was changed from a 204 to a 400, previously it would quarantine
+    # if ru_ref or something was incorrect, but now everything comes from metadata (filename)
+    # so there will be no guarantee of a tx_id being extracted
+
+    # ------------------------
+    # Setup test data
+    # ------------------------
+
+    timestamp = "20220920110706"
     ru_check = "T"
     period = "202112"
     survey_id = "001"
+    ru_ref = "1234"  # Invalid ru_ref to trigger metadata processing failure
 
-    # Invalid ru_ref to trigger metadata processing failure
-    ru_ref = "1234"
+    tx_id = f"{ru_ref}{ru_check}_{period}_{survey_id}_{timestamp}"
+    file_name = f"{tx_id}.xlsx.gpg"
+    data = base64.b64encode(
+        "hello, world".encode("utf-8")
+    ).decode("utf-8")
 
-    test_data = TestDataContainer(tx_id, ru_ref, ru_check, period, survey_id)
+    # ------------------------
+    # Setup Envelope
+    # ------------------------
+
+    message: Message = {
+        "attributes": {
+            "objectId": file_name,
+        },
+        "data": data,
+        "message_id": "test-id",
+        "publish_time": MOCK_RECEIPT_DATE.strftime("%Y-%m-%dT%H:%M:%S.000Z")
+    }
+
+    envelope: Envelope = {"message": message, "subscription": "test-subscription"}
+
+    # ------------------------
+    # Call the endpoint
+    # ------------------------
 
     response = test_client.post(
         "/",
-        json=test_data.envelope
+        json=envelope
     )
 
-    assert response.status_code == 204
-    storage_mock.read.assert_not_called()
-    http_mock.post.assert_not_called()
+    # ------------------------
+    # Assertions
+    # ------------------------
 
-    pubsub_mock.quarantine_error.assert_called_once()
+    assert response.status_code == 400  # TODO see comment at top
+
+    # Assert we did not attempt to read the seft
+    storage_mock.read.assert_not_called()
+
+    # Assert we did not attempt to deliver seft
+    http_mock.post.assert_not_called()
 
 
 def test_send_quarantine_message_when_seft_file_read_fails(test_client, storage_mock, http_mock, pubsub_mock):
@@ -230,26 +301,67 @@ def test_send_quarantine_message_when_seft_file_read_fails(test_client, storage_
     6. Assert that the HTTP Post was not called.
     7. Assert that a quarantine message was sent to Pub/Sub.
     """
-    tx_id = "20220920110706"
+
+    # ------------------------
+    # Setup test data
+    # ------------------------
+
+    timestamp = "20220920110706"
     ru_ref = "90123456789"
     ru_check = "T"
     period = "202112"
     survey_id = "001"
 
-    test_data = TestDataContainer(tx_id, ru_ref, ru_check, period, survey_id)
+    tx_id = f"{ru_ref}{ru_check}_{period}_{survey_id}_{timestamp}"
+    file_name = f"{tx_id}.xlsx.gpg"
+    data = base64.b64encode(
+        "hello, world".encode("utf-8")
+    ).decode("utf-8")
+
+    # ------------------------
+    # Setup Envelope
+    # ------------------------
+
+    message: Message = {
+        "attributes": {
+            "objectId": file_name,
+        },
+        "data": data,
+        "message_id": "test-id",
+        "publish_time": MOCK_RECEIPT_DATE.strftime("%Y-%m-%dT%H:%M:%S.000Z")
+    }
+
+    envelope: Envelope = {"message": message, "subscription": "test-subscription"}
+
+    # ------------------------
+    # Side effects
+    # ------------------------
 
     storage_mock.read.side_effect = DataError("Failed to read SEFT file")
 
+    # ------------------------
+    # Call endpoint
+    # ------------------------
+
     response = test_client.post(
         "/",
-        json=test_data.envelope
+        json=envelope
     )
+
+    # ------------------------
+    # Assertions
+    # ------------------------
 
     assert response.status_code == 204
+
+    # Assert that we attempted to read the seft file
     storage_mock.read.assert_called_once_with(
-        test_data.seft_filename,
+        file_name,
         MOCK_BUCKET_NAME,
     )
+
+    # Assert we never got far enough to call deliver
     http_mock.post.assert_not_called()
 
+    # Assert the file was quarantined
     pubsub_mock.quarantine_error.assert_called_once()

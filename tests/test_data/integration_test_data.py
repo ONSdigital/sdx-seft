@@ -7,7 +7,6 @@ from sdx_base.models.pubsub import Message, Envelope
 from app.definitions.definitions import SurveyType, Context
 from app.functions.zip_function import create_zip
 
-MOCK_RECEIPT_DATE = datetime.datetime(2023, 4, 20, 12, 0, 0, 0)
 
 
 class TestDataContainer:
