@@ -10,7 +10,6 @@ from app.config.deliver_config import deliver_config
 from app.definitions.definitions import SurveyType, Context
 from app.functions.zip_function import create_zip
 from app.services.deliver_service import FILE_NAME, CONTEXT, TX_ID
-from tests.test_data.integration_test_data import TestDataContainer
 
 from tests.test_data.mock_settings import MOCK_BUCKET_NAME, MOCK_DELIVER_SERVICE_URL
 

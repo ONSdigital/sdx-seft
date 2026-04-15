@@ -3,7 +3,7 @@ from unittest.mock import Mock, patch
 
 import pytest
 
-from app.definitions.definitions import SurveyType
+from app.definitions.definitions import SurveyType, Metadata
 from app.services.deliver_service import DeliverService
 from app.services.receipt_service import ReceiptService
 
@@ -28,13 +28,13 @@ def test_process_receipt(
         datetime_service=datetime_mock
     )
 
-    meta_dict = {
+    meta_dict: Metadata = Metadata(**{
         "survey_id": "123",
         "ru_ref": "90123456789",
         "ru_check": "T",
         "period": "202401",
         "tx_id": "123456",
-    }
+    })
 
     # Act
     receipt_service.process_receipt(meta_dict)
@@ -43,7 +43,7 @@ def test_process_receipt(
     deliver_service.deliver.assert_called_once_with(
         SurveyType.SEFT_RECEIPT,
         meta_dict,
-        "123456",
+        "123456_receipt.zip",
         b'zipped-bytes',
     )
 

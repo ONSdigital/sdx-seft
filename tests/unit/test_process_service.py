@@ -83,7 +83,7 @@ def test_process_metadata_returns_correct_metadata(
     # Assert the returned metadata dictionary is correct
     assert meta_dict == {
         "filename": "90123456789T_202112_001_20220920110706.xlsx.gpg",
-        "tx_id": "20220920110706",
+        "tx_id": "90123456789T_202112_001_20220920110706",
         "survey_id": "001",
         "period": "202112",
         "ru_ref": "90123456789",
