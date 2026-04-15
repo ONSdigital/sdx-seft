@@ -34,6 +34,8 @@ async def handle(
     except DataError:
         logger.exception(f"Could not extract metadata from filename {file_name}")
 
+        # TODO, need a solution for this
+        
         # If an error occurs extracting metadata, we cannot quarantine, as we don't have a tx_id
         return Response(status_code=400)
 
