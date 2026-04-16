@@ -15,6 +15,8 @@ from tests.test_data.mock_settings import MOCK_BUCKET_NAME, MOCK_DELIVER_SERVICE
 
 MOCK_RECEIPT_DATE = datetime.datetime(2023, 4, 20, 12, 0, 0, 0)
 
+# TODO tests need refactoring (lots of duplication)
+
 
 def test_seft_and_receipt_deliver_success(test_client: TestClient, storage_mock, http_mock):
     """
@@ -28,8 +30,6 @@ def test_seft_and_receipt_deliver_success(test_client: TestClient, storage_mock,
     5. Assert that the SEFT file was delivered to sdx-deliver with the correct parameters and file bytes.
     6. Assert that the SEFT receipt was delivered to sdx-deliver with the correct parameters and receipt bytes.
     """
-
-    # TODO, this test needs refectoring
 
     # ------------------------
     # Setup test data
@@ -148,8 +148,6 @@ def test_seft_deliver_success_when_receipt_not_required(test_client: TestClient,
     5. Assert that the HTTP Post was called only once with the correct parameters and file bytes of SEFT.
     """
 
-    # TODO, this test needs refectoring
-
     # ------------------------
     # Setup test data
     # ------------------------
@@ -229,9 +227,6 @@ def test_send_quarantine_message_when_metadata_incomplete(test_client: TestClien
     4. Assert that the SEFT file read from storage was not called.
     5. Assert that the HTTP Post was not called.
     """
-
-    # if ru_ref or something was incorrect, but now everything comes from metadata (filename)
-    # so there will be no guarantee of a tx_id being extracted
 
     # ------------------------
     # Setup test data
