@@ -225,12 +225,11 @@ def test_send_quarantine_message_when_metadata_incomplete(test_client: TestClien
     Test procedures:
     1. Setup test data with an invalid `ru_ref` to trigger metadata processing failure.
     2. Call the endpoint with the test data envelope.
-    3. Assert that the response status code is 400
+    3. Assert that the response status code is 204
     4. Assert that the SEFT file read from storage was not called.
     5. Assert that the HTTP Post was not called.
     """
 
-    # TODO this was changed from a 204 to a 400, previously it would quarantine
     # if ru_ref or something was incorrect, but now everything comes from metadata (filename)
     # so there will be no guarantee of a tx_id being extracted
 
@@ -278,13 +277,16 @@ def test_send_quarantine_message_when_metadata_incomplete(test_client: TestClien
     # Assertions
     # ------------------------
 
-    assert response.status_code == 400  # TODO see comment at top
+    assert response.status_code == 204
 
     # Assert we did not attempt to read the seft
     storage_mock.read.assert_not_called()
 
     # Assert we did not attempt to deliver seft
     http_mock.post.assert_not_called()
+
+    # Assert the file was quarantined
+    pubsub_mock.quarantine_error.assert_called_once()
 
 
 def test_send_quarantine_message_when_seft_file_read_fails(test_client, storage_mock, http_mock, pubsub_mock):
