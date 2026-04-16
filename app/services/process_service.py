@@ -1,9 +1,8 @@
 import json
 from typing import Protocol, Optional
 
-from fastapi import Request
 from sdx_base.errors.errors import DataError
-from sdx_base.models.pubsub import Message, get_data, get_message
+from sdx_base.models.pubsub import Message, get_data
 
 from app import get_logger
 from app.definitions.definitions import Metadata, SurveyType
@@ -113,4 +112,3 @@ class ProcessService:
             tx_id
         )
         logger.info("Quarantine completed successfully")
-

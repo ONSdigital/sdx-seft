@@ -1,4 +1,3 @@
-from pathlib import Path
 
 from sdx_base.errors.errors import UnrecoverableError
 from sdx_base.run import run
