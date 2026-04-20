@@ -1,25 +1,27 @@
+import datetime
 import os
 from unittest.mock import Mock
 
 import pytest
-from pathlib import Path
 
 from fastapi import FastAPI
 from fastapi.testclient import TestClient
 
-from sdx_base.run import run
+from sdx_base.server.tx_id import txid_not_applicable
 from sdx_base.services.storage import StorageService
 from sdx_base.services.http import HttpService
 from sdx_base.services.pubsub import PubsubService
 from sdx_base.server.server import RouterConfig
+from sdx_base.run import initialise
 
 from app.dependencies import get_storage_service, get_pubsub_service, get_http_service, get_settings, \
     get_datetime_service
 from app.routes import router
 from app.services.datetime_service import DatetimeService
-from app.services.process_service import get_tx_id
-from tests.test_data.integration_test_data import MOCK_RECEIPT_DATE
+from app.settings import ROOT
 from tests.test_data.mock_settings import MockSettings, mock_get_instance
+
+MOCK_RECEIPT_DATE = datetime.datetime(2023, 4, 20, 12, 0, 0, 0)
 
 
 @pytest.fixture(autouse=True)
@@ -74,22 +76,32 @@ def settings_mock(test_client):
     app.dependency_overrides[get_settings] = mock_get_instance
 
 
-@pytest.fixture(scope="session")
-def test_client():
+@pytest.fixture
+def test_app() -> FastAPI:
+    """
+    This fixture will create a FastAPI app using SDX base
+    """
+
+    # Set environment variable for testing
+    os.environ["PROJECT_ID"] = "ons-sdx-sandbox"
+
+    class MockSecretReader:
+        def get_secret(self, project_id: str, secret_id: str) -> str:
+            return "secret"
+
+    return initialise(
+        settings=MockSettings,
+        routers=[RouterConfig(router, tx_id_getter=txid_not_applicable)],
+        proj_root=ROOT,
+        secret_reader=MockSecretReader,
+    )
+
+
+@pytest.fixture
+def test_client(test_app: FastAPI) -> TestClient:
     """
     General client for hitting endpoints in tests
     """
-    os.environ["PROJECT_ID"] = "ons-sdx-sandbox"
-    proj_root = Path(__file__).parent  # sdx-seft dir
-    router_config = RouterConfig(
-        router, tx_id_getter=get_tx_id
-    )
-    app: FastAPI = run(
-        MockSettings,
-        routers=[router_config],
-        proj_root=proj_root,
-        serve=lambda a, b: a,
-    )
 
-    test_client = TestClient(app)
+    test_client = TestClient(test_app)
     return test_client

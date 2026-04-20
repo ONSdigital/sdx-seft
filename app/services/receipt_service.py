@@ -53,7 +53,7 @@ class ReceiptService:
         return bytes(self._format_idbr_receipt(survey_id, ru_ref, ru_check, period), "utf-8")
 
     def _formulate_zip_receipt_name(self, tx_id: str) -> str:
-        return tx_id
+        return f"{tx_id}_receipt.zip"
 
     def _formulate_idbr_receipt_name(self, tx_id: str) -> str:
         dm = self._datetime_service.get_current_datetime_in_dm()
