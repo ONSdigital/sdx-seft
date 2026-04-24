@@ -117,7 +117,7 @@ def test_seft_and_receipt_deliver_success(test_client: TestClient, storage_mock,
         "context_type": "business_survey"
     }
 
-    receipt_filename = f"REC{MOCK_RECEIPT_DATE.strftime("%d%m")}_{tx_id}.DAT"
+    receipt_filename = f"REC_{ru_ref}_{ru_check}_{survey_id}_{period}.DAT"
     receipt_bytes = bytes(f"{ru_ref}:{ru_check}:{survey_id}:{period}", "utf-8")
     receipt_zip_bytes = create_zip({receipt_filename: receipt_bytes})
 
