@@ -34,7 +34,7 @@ class ReceiptService:
             return
 
         receipt_filename = self._formulate_idbr_receipt_name(
-            meta_dict['tx_id'],
+            meta_dict['ru_ref'],
             meta_dict['ru_check'],
             meta_dict['survey_id'],
             meta_dict['period']
