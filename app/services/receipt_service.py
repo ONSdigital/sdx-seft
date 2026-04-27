@@ -25,7 +25,7 @@ class ReceiptService:
         Steps:
         - Check if receipt is required for the survey ID
         - Extract RU check from filename
-        - Generate the receipt content (Filename: REC<DDMM>_<TX_ID>.DAT)
+        - Generate the receipt content (Filename: REC_<RUREF>_<CHECKLETTER>_<SURVEY_ID>_<PERIOD>.DAT)
         - Create a zip file containing the receipt (Filename: <TX_ID>_receipt)
         - Deliver the receipt via the delivery service
         """
@@ -33,7 +33,12 @@ class ReceiptService:
             logger.info(f"No receipt required for survey {meta_dict.get('survey_id')}. Skipping receipt generation.")
             return
 
-        receipt_filename = self._formulate_idbr_receipt_name(meta_dict['tx_id'])
+        receipt_filename = self._formulate_idbr_receipt_name(
+            meta_dict['ru_ref'],
+            meta_dict['ru_check'],
+            meta_dict['survey_id'],
+            meta_dict['period']
+        )
         receipt_bytes = self._create_receipt_file(
             meta_dict['survey_id'],
             meta_dict['ru_ref'],
@@ -55,9 +60,9 @@ class ReceiptService:
     def _formulate_zip_receipt_name(self, tx_id: str) -> str:
         return f"{tx_id}_receipt.zip"
 
-    def _formulate_idbr_receipt_name(self, tx_id: str) -> str:
+    def _formulate_idbr_receipt_name(self, ruref: str, checkletter: str, survey_id: str, period: str) -> str:
         dm = self._datetime_service.get_current_datetime_in_dm()
-        return "REC{0}_{1}.DAT".format(dm, tx_id)
+        return "REC_{0}_{1}_{2}_{3}.DAT".format(ruref, checkletter, survey_id, period)
 
     def _format_idbr_receipt(self, survey_id: str, ru_ref: str, ru_check: str, period: str):
         """Format a receipt in IDBR format."""
