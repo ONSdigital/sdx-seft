@@ -112,10 +112,13 @@ def test_receipt_service_formulate_idbr_receipt_name(
         datetime_service=datetime_mock
     )
 
-    tx_id = "123456"
+    ruref = "12345"
+    ru_check = "T"
+    period = "202401"
+    survey_id = "123"
 
     # Act
-    receipt_filename = receipt_service._formulate_idbr_receipt_name(tx_id)
+    receipt_filename = receipt_service._formulate_idbr_receipt_name(ruref, ru_check, survey_id, period)
 
     # Assert
-    assert receipt_filename == f"REC2004_{tx_id}.DAT"
+    assert receipt_filename == f"REC_12345_T_123_202401.DAT"
