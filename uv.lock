@@ -755,7 +755,7 @@ wheels = [
 
 [[package]]
 name = "sdx-seft"
-version = "2.3.15"
+version = "2.3.16"
 source = { virtual = "." }
 dependencies = [
     { name = "sdx-base" },
