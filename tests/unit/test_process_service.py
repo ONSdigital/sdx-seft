@@ -91,6 +91,37 @@ def test_process_metadata_returns_correct_metadata(
     }
 
 
+def test_process_metadata_returns_correct_metadata_for_xls(
+    settings: SettingsProtocol,
+    storage_service: ReadProtocol,
+    deliver_service: DeliverService,
+    pubsub_service: PubsubProtocol,
+):
+    # Create ProcessService instance
+    process_service = ProcessService(
+        settings=settings,
+        storage_service=storage_service,
+        deliver_service=deliver_service,
+        pubsub_service=pubsub_service,
+    )
+
+    # Set up a valid Pub/Sub message using .xls
+    message = make_pubsub_message({"filename": "90123456789T_202112_001_20220920110706.xls.gpg"})
+
+    # Call the process_metadata method
+    meta_dict = process_service.process_metadata(message)
+
+    # Assert the returned metadata dictionary is correct
+    assert meta_dict == {
+        "filename": "90123456789T_202112_001_20220920110706.xls.gpg",
+        "tx_id": "90123456789T_202112_001_20220920110706",
+        "survey_id": "001",
+        "period": "202112",
+        "ru_ref": "90123456789",
+        "ru_check": "T",
+    }
+
+
 def test_process_seft_reads_file_and_delivers_seft(
     settings: SettingsProtocol,
     storage_service: ReadProtocol,
