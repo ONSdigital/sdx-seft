@@ -25,7 +25,7 @@ def parse_metadata_from_filename(filename: str) -> Metadata:
                 survey_id: 266
                 tx_id: 20220920110706
     """
-    pattern = r'^([0-9]{11})([A-Z0-9]?)_([0-9]{6})_([0-9]{3})_([0-9]{14})\.(?:xls|xlsx)(?:\.gpg)?$'
+    pattern = r'^([0-9]{11})([A-Z0-9])_([0-9]{6})_([0-9]{3})_([0-9]{14})\.(?:xls|xlsx)(?:\.gpg)?$'
     match = re.match(pattern, filename)
     if not match:
         raise DataError("Failed to parse metadata from filename!")
