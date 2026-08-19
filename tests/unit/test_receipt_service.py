@@ -41,7 +41,7 @@ def test_process_receipt(
 
     # Assert
     deliver_service.deliver.assert_called_once_with(
-        SurveyType.SEFT_RECEIPT,
+        SurveyType.SEFT_RCPT,
         meta_dict,
         "123456_receipt.zip",
         b'zipped-bytes',

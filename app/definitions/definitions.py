@@ -13,7 +13,7 @@ class Metadata(TypedDict):
 
 class SurveyType(StrEnum):
     SEFT = "seft"
-    SEFT_RECEIPT = "seft_receipt"
+    SEFT_RCPT = "seft_rcptt"
 
 
 class Context(TypedDict):
