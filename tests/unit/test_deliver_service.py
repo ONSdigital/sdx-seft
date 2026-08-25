@@ -119,12 +119,12 @@ def test_deliver_seft_receipt_posts_correct_payload(
         "period_id": period,
         "ru_ref": ru_ref,
         "tx_id": tx_id,
-        "survey_type": SurveyType.SEFT_RECEIPT,
+        "survey_type": SurveyType.SEFT_RCPT,
         "context_type": "business_survey",
     }
 
     # Call the deliver_seft method
-    service.deliver(SurveyType.SEFT_RECEIPT, meta_dict, zip_filename, file_bytes)
+    service.deliver(SurveyType.SEFT_RCPT, meta_dict, zip_filename, file_bytes)
 
     # Assert that the HTTP POST was called once
     http_service.post.assert_called_once()
@@ -134,7 +134,7 @@ def test_deliver_seft_receipt_posts_correct_payload(
     kwargs = http_service.post.call_args.kwargs
 
     assert domain == settings.deliver_service_url
-    assert endpoint == deliver_config[SurveyType.SEFT_RECEIPT]["endpoint"]
+    assert endpoint == deliver_config[SurveyType.SEFT_RCPT]["endpoint"]
 
     params = kwargs["params"]
 
@@ -143,4 +143,4 @@ def test_deliver_seft_receipt_posts_correct_payload(
     assert json.loads(params[CONTEXT]) == expected_context
 
     files = kwargs["files"]
-    assert files[deliver_config[SurveyType.SEFT_RECEIPT]["file_key"]] == file_bytes
+    assert files[deliver_config[SurveyType.SEFT_RCPT]["file_key"]] == file_bytes

@@ -50,7 +50,7 @@ class ReceiptService:
         zip_receipt_filename = self._formulate_zip_receipt_name(meta_dict['tx_id'])
 
         # Deliver the zipped SEFT receipt file
-        self._deliver_service.deliver(SurveyType.SEFT_RECEIPT, meta_dict, zip_receipt_filename, zip_receipt_file)
+        self._deliver_service.deliver(SurveyType.SEFT_RCPT, meta_dict, zip_receipt_filename, zip_receipt_file)
 
         logger.info("SEFT receipt file process completed successfully")
 

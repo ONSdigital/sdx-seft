@@ -13,7 +13,7 @@ deliver_config: dict[SurveyType, DeliverConfigDetails] = {
         "endpoint": "deliver/v2/seft",
         "file_key": "seft_file"
     },
-    SurveyType.SEFT_RECEIPT: {
+    SurveyType.SEFT_RCPT: {
         "endpoint": "deliver/v2/seft_receipt",
         "file_key": "zip_file"
     }

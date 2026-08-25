@@ -113,7 +113,7 @@ def test_seft_and_receipt_deliver_success(test_client: TestClient, storage_mock,
         "period_id": period,
         "ru_ref": ru_ref,
         "tx_id": tx_id,
-        "survey_type": SurveyType.SEFT_RECEIPT,
+        "survey_type": SurveyType.SEFT_RCPT,
         "context_type": "business_survey"
     }
 
@@ -124,14 +124,14 @@ def test_seft_and_receipt_deliver_success(test_client: TestClient, storage_mock,
     # Assert SEFT receipt delivery
     http_mock.post.assert_called_with(
         MOCK_DELIVER_SERVICE_URL,
-        deliver_config[SurveyType.SEFT_RECEIPT]['endpoint'],
+        deliver_config[SurveyType.SEFT_RCPT]['endpoint'],
         params={
             FILE_NAME: f"{tx_id}_receipt.zip",
             TX_ID: tx_id,
             CONTEXT: json.dumps(receipt_context),
         },
         files={
-            deliver_config[SurveyType.SEFT_RECEIPT]['file_key']: receipt_zip_bytes
+            deliver_config[SurveyType.SEFT_RCPT]['file_key']: receipt_zip_bytes
         }
     )
 
